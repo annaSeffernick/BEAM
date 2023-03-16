@@ -1,12 +1,16 @@
 Package: BEAM
-Title: What the Package Does (One Line, Title Case)
+Title: Bootstrap Evaluation of Association Matrices
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+    person(given="Anna", family="Seffernick", middle="Eames", email="anna.seffernick@stjude.org", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0848-4604")),
+           person(given="Stanley", family="Pounds", email="stanley.pounds@stjude.org", role=c("aut")),
+           person(given="Xueyuan", family="Cao", "xcao12@uthsc.edu", role=c("aut")))
+Description: Integrate multiple forms of high dimensional genomic data with multiple clinical endpoints to identify meaningful genes.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Depends: 
+    R (>= 2.10)
+LazyData: true

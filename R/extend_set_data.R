@@ -1,4 +1,15 @@
-extend.set.data=function(set.data,sep)
+#' Extend set definition data with genes on the same row separated by commas, semicolons, slashes, etc
+#'
+#' @param set.data A data frame with set definition data.
+#' @param sep Punctuation to split on.
+#'
+#' @return A data frame.
+#' @export
+#'
+#' @examples
+#' data(setdat)
+#' extend_set_data(setdat, sep=",")
+extend_set_data=function(set.data,sep)
 
 {
   set.id=strsplit(set.data$set.id,split=sep,fixed=T)
