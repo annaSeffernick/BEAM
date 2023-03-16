@@ -2,4 +2,5 @@
 
 export(check_list_class)
 export(extend_set_data)
+export(find_id_clm)
 export(get_id_index)
