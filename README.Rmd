@@ -29,3 +29,6 @@ You can install the development version of BEAM from [GitHub](https://github.com
 devtools::install_github("annaSeffernick/BEAM")
 ```
 
+## Example
+
+Add example later.

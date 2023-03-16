@@ -20,3 +20,7 @@ You can install the development version of BEAM from
 # install.packages("devtools")
 devtools::install_github("annaSeffernick/BEAM")
 ```
+
+## Example
+
+Add example later.
