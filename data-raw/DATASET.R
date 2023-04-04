@@ -14,16 +14,22 @@ library(survival)
 
 lesion<-readRDS(paste0(ddir, "/Abdel-GRIN/TALL-binary-lsn-mtx-atleast5patients.RDS"))
 #lesion <- cbind(lesion.ID=rownames(lesion), lesion)
-lesion.sm <- lesion[1:20,]
+lesion.id <- order(rowSums(lesion), decreasing = T)
+lesion.sm <- lesion[lesion.id[1:20],]
+# Extract ensembl IDs to get matching RNA if it exists
+les.rw <- rownames(lesion.sm)
+les.rw.list <- strsplit(les.rw, "_")
+les.rw.df <- do.call(rbind.data.frame, les.rw.list)
+colnames(les.rw.df) <- c("ID", "Type")
 
 rdat<-"C:/Users/aseffern/Box/BookChapterApril2022/DataSet/v1/TALL-dataset.Rdata"
 load(rdat)
 geneann<-read.csv(paste0(ddir, "/DataSet/v1/ensembl.annotation.csv"))
 RNA<-RNA[!is.na(RNA$ensembl.ID), ]
 rownames(RNA)<-RNA$ensembl.ID
-RNA.sm <- RNA[1:20,]
+match.id <- which(rownames(RNA) %in% les.rw.df$ID)
+RNA.sm <- RNA[c(1:14, match.id),]
 geneann.sm <- geneann[which(geneann$ensembl.ID %in% rownames(RNA.sm)),]
-
 #RNA<-RNA[rownames(RNA)%in%substring(rownames(lesion), 1, 15), ]
 #lesion<-lesion[substring(rownames(lesion), 1, 15)%in%rownames(RNA), ]
 
