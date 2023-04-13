@@ -54,7 +54,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
           message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
         }
         else{
-          temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row,data=main.data,model=T")
+          temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
           message(paste0(temp.ep.name," is continuous, fitting lm"))
         }
       }
@@ -116,7 +116,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
           message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
         }
         else{
-          temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T")
+          temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
           message(paste0(temp.ep.name," is continuous, fitting lm"))
         }
       }
