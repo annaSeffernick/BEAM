@@ -2,7 +2,7 @@
 #'
 #' @param main.data A data.frame
 #' @param mtx.data A list, each element is a matrix
-#' @param mtx.anns A list, each element is a data.f.rame
+#' @param mtx.anns A list, each element is a data.frame
 #' @param set.data A data.frame with columns set.id, mtx.id, row.id
 #' @param set.anns A data frame with set.id and other columns
 #' @param n.boot Number of bootstraps

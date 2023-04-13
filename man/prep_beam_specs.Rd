@@ -4,7 +4,7 @@
 \alias{prep_beam_specs}
 \title{Prepare beam.specs data.frame for BEAM model fitting}
 \usage{
-prep_beam_specs(beam.data, endpts, adjvars = NULL)
+prep_beam_specs(beam.data, endpts, adjvars = NULL, endptmdl = NULL)
 }
 \arguments{
 \item{beam.data}{A beam.data object from prep_beam_data}
@@ -12,6 +12,8 @@ prep_beam_specs(beam.data, endpts, adjvars = NULL)
 \item{endpts}{A vector of endpoint variable names in main.data}
 
 \item{adjvars}{Default NULL, optional vector of adjustment variable names in main.data}
+
+\item{endptmdl}{Optional model specification data.frame with endpoint name column called "endpt" and model string column called "mdl"}
 }
 \value{
 beam.specs, a data.frame specifying the omics-endpoint association models to be fit
@@ -24,7 +26,6 @@ data(clinf)
 data(omicdat)
 data(omicann)
 data(setdat)
-data(specs)
 test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
                                  mtx.anns=omicann, set.data=setdat,
                                  set.anns=NULL, n.boot=100, seed=123)

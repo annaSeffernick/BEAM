@@ -19,7 +19,7 @@ prep_beam_data(
 
 \item{mtx.data}{A list, each element is a matrix}
 
-\item{mtx.anns}{A list, each element is a data.f.rame}
+\item{mtx.anns}{A list, each element is a data.frame}
 
 \item{set.data}{A data.frame with columns set.id, mtx.id, row.id}
 
