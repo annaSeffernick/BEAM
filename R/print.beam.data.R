@@ -1,8 +1,10 @@
 #' Print summary information about a beam.data object
 #'
-#' @param beam.data A beam.data object from prep_beam_data()
+#' @param x An object of class "beam.data"
+#' @param ... Other arguments passed to or from other methods
 #'
 #' @return Messages about the beam.data object
+#' @importFrom utils head
 #' @export
 #'
 #' @examples
@@ -13,17 +15,20 @@
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
 #'                                  set.anns=NULL, n.boot=100, seed=123)
-#' print_beam_data(test.beam.data)
-print_beam_data=function(beam.data)
+#' print(test.beam.data)
+print.beam.data=function(x,...)
 
 {
+  beam.data <- unclass(x)
+  beam.data <- as.list(beam.data)
   cat(paste0("main.data: ",
              nrow(beam.data$main.data)," rows and ",
              ncol(beam.data$main.data)," columns. \n \n"))
+  print(beam.data$main.data[1:5, 1:5])
 
   n.mtx=length(beam.data$mtx.data)
 
-  cat(paste0("mtx.data: \n"))
+  cat(paste0("\nmtx.data: \n"))
 
   mtx.names=names(beam.data$mtx.data)
   for (i in 1:n.mtx)
@@ -32,6 +37,10 @@ print_beam_data=function(beam.data)
                ncol(beam.data$mtx.data[[i]])," columns linked to ",
                sum(!is.na(beam.data$main.data[,paste0(mtx.names[i],".clm")])),
                " rows of main.data. \n"))
+  }
+  for(i in 1:n.mtx){
+    cat(paste0("\n", mtx.names[i],": \n"))
+    print(beam.data$mtx.data[[i]][1:5,1:5])
   }
 
   cat(paste0("\n","mtx.anns: \n"))
@@ -45,13 +54,19 @@ print_beam_data=function(beam.data)
                  nrow(beam.data$mtx.anns[[i]])," rows and ",
                  ncol(beam.data$mtx.anns[[i]])," columns. \n"))
     }
+    for(i in 1:n.anns){
+      cat(paste0("\n", ann.names[i],": \n"))
+      print(beam.data$mtx.anns[[i]][1:5,1:min(ncol(beam.data$mtx.anns[[i]]), 5)])
+    }
   }
 
   cat(paste0("\n","anns.mtch: \n"))
   print(beam.data$anns.mtch)
 
   cat(paste0("\n","set.data: ",
-             nrow(beam.data$set.data)," rows assigning sets to data.mtx rows."))
+             nrow(beam.data$set.data)," rows assigning sets to data.mtx rows. \n"))
+
+  print(head(beam.data$set.data))
 
 
   cat(paste0("\n \n","set.anns: ",
@@ -60,6 +75,6 @@ print_beam_data=function(beam.data)
   cat(paste0("\n \n","boot.index: ",
              nrow(beam.data$boot.index)," rows and ",
              ncol(beam.data$boot.index)," columns of bootstrap indices. \n"))
-
+  print(beam.data$boot.index[1:5, 1:5])
 
 }
