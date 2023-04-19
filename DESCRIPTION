@@ -17,5 +17,6 @@ LazyData: true
 URL: https://github.com/annaSeffernick/BEAM
 BugReports: https://github.com/annaSeffernick/BEAM/issues
 Imports: 
-    coxphf,
-    survival
+    survival,
+    MASS,
+    stats

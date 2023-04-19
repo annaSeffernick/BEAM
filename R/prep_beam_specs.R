@@ -44,7 +44,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row,data=main.data)")
+        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
         message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
       }
       else if(inherits(temp.ep.vec, "numeric")){
@@ -58,14 +58,14 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
           message(paste0(temp.ep.name," is continuous, fitting lm"))
         }
       }
-      else if(inherits(temp.ep.vec, "int")){
+      else if(inherits(temp.ep.vec, "integer")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
           message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
         }
         else{
-          temp.mdl <- paste0("glm", temp.ep.name,"~mtx.row,data=main.data,family=poisson())")
+          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family=poisson())")
           message(paste0(temp.ep.name," is count, fitting glm with family='poisson'"))
         }
       }
@@ -106,7 +106,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name,"; Note that you must specify adjustment variables in mdl string."))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
         message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
       }
       else if(inherits(temp.ep.vec, "numeric")){
@@ -120,14 +120,14 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
           message(paste0(temp.ep.name," is continuous, fitting lm"))
         }
       }
-      else if(inherits(temp.ep.vec, "int")){
+      else if(inherits(temp.ep.vec, "integer")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
           message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
         }
         else{
-          temp.mdl <- paste0("glm", temp.ep.name,"~mtx.row+",adjvars.add,"data=main.data,family=poisson())")
+          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,"data=main.data,family=poisson())")
           message(paste0(temp.ep.name," is count, fitting glm with family='poisson'"))
         }
       }

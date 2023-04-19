@@ -7,8 +7,11 @@
 #' @importFrom stats coef
 #' @importFrom stats sd
 #' @importFrom stats lm
+#' @importFrom stats nlminb
 #' @importFrom survival coxph
-#' @importFrom coxphf coxphf
+#' @importFrom survival coxph.control
+#' @importFrom survival Surv
+#' @importFrom MASS ginv
 #' @export
 #'
 #' @examples
@@ -171,8 +174,13 @@ model_coef=function(x,main.data,mdl)
     x.event=range(x.temp[event>0],na.rm=T)
     x.none=range(x.temp[event==0],na.rm=T)
 
-    if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
-    if (all(x.none<=x.event[1])) return(Inf)  #
+    if (all(x.none>=x.event[2])|all(x.none<=x.event[1])){ # if x for cases with no event is always less than x for cases with event
+      stime=Surv(evtm, event)
+      form=stime~x.temp
+      dset.temp <- cbind.data.frame(stime, x.temp)
+      fcox.res <- firth.coxph(dset=dset.temp,form=form,use.pen=T)
+      return(fcox.res$par)
+    }
   }
 
   #######################################
@@ -218,18 +226,33 @@ get_model_terms=function(model.fit)
   return(model.terms)
 }
 
-#######################################
-# Modify coxphf
+#################################################
+# Find Firth-penalized coefficients in Cox model
+# in case of monotone likelihood
 
-coxphf2=function(form,data)
+firth.neg.logL=function(beta,dset,form,use.pen=F)
 {
-  cox.res=coxph(form,data=data,x=T,model=T)
-  all.zero=(sd(cox.res$model[,2])==0)
-  if (all.zero) return(0)
-  coxphf.res=try(coxphf(cox.res$formula,
-                        data=cox.res$model))
-  if (inherits(coxphf.res, "try-error")) return(0)
-  else return(coxphf.res)
+  cox.res0=survival::coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
+  logL=cox.res0$loglik[1]
+  fpen=0.5*log(sum(diag(MASS::ginv(cox.res0$var))))
+
+  if (!use.pen) fpen=0
+
+  res=-logL-fpen
+  print(c(beta=beta,logL=logL,firth=fpen,pen.logL=logL+fpen))
+  return(res)
 }
+
+firth.coxph=function(dset,form,use.pen=T)
+{
+  cox.fit=survival::coxph(form,data=dset,control=coxph.control(iter.max=0))
+  res=stats::nlminb(start=cox.fit$coef,
+             objective=firth.neg.logL,
+             dset=dset,form=form,
+             use.pen=use.pen)
+  return(res)
+}
+
+
 
 
