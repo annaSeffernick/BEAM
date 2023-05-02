@@ -21,7 +21,7 @@
 #' data(setdat)
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
-#'                                  set.anns=NULL, n.boot=100, seed=123)
+#'                                  set.anns=NULL, n.boot=10, seed=123)
 #' specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"))
 #' test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs)
 compute_beam_stats=function(beam.data, beam.specs)
@@ -132,7 +132,7 @@ model_coef=function(x,main.data,mdl)
 
 {
   res=NA
-  sdx=stats::sd(x,na.rm=T)
+  sdx=sd(x,na.rm=T)
   if (is.na(sdx)) return(0)
   if (sdx==0) return(0)
 
@@ -142,12 +142,20 @@ model_coef=function(x,main.data,mdl)
   model.fit=try(eval(parse(text=mdl)))
 
 
-  if (!inherits(model.fit[1],"try.error"))
+  if (class(model.fit)[1]!="try.error")
   {
-    beta=stats::coef(model.fit)
+    beta=coef(model.fit)
     int=(names(beta)=="(Intercept)")
     beta=beta[!int]
     res=beta[1]
+  }
+
+  #################################
+  # special case of coxphf2
+  if(inherits(model.fit, "coxphf2")){
+    beta=model.fit$beta
+    mtx.ind <- which(names(beta)=="mtx.row")
+    res <- beta[mtx.ind]
   }
 
   #################################
@@ -165,41 +173,36 @@ model_coef=function(x,main.data,mdl)
     if (mean(event,na.rm=T)==0) return(0)
 
     # no variability in event time
-    if ((stats::sd(evtm,na.rm=T)==0)&(mean(event,na.rm=T)==1)) return(0)
+    if ((sd(evtm,na.rm=T)==0)&(mean(event,na.rm=T)==1)) return(0)
 
     # no variability in x
-    if (stats::sd(x.temp,na.rm=T)==0) return(0)
+    if (sd(x.temp,na.rm=T)==0) return(0)
 
     # check for monotone likelihood
     x.event=range(x.temp[event>0],na.rm=T)
     x.none=range(x.temp[event==0],na.rm=T)
 
-    if (all(x.none>=x.event[2])|all(x.none<=x.event[1])){ # if x for cases with no event is always less than x for cases with event
-      stime=Surv(evtm, event)
-      form=stime~x.temp
-      dset.temp <- cbind.data.frame(stime, x.temp)
-      fcox.res <- firth.coxph(dset=dset.temp,form=form,use.pen=T)
-      return(fcox.res$par)
-    }
+    if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
+    if (all(x.none<=x.event[1])) return(Inf)  #
   }
 
   #######################################
   # special cases in lm
-  if (inherits(model.fit,"lm"))
+  if (inherits(model.fit, "lm"))
   {
     model.terms=get_model_terms(model.fit)
     y.temp=model.fit$model[,model.terms[1]]
     x.temp=model.fit$model[,model.terms[2]]
 
     # no variability in x or y after removing NAs
-    sdx=stats::sd(x.temp,na.rm=T)
+    sdx=sd(x.temp,na.rm=T)
     if (sdx==0) res=0
-    sdy=stats::sd(y.temp,na.rm=T)
+    sdy=sd(y.temp,na.rm=T)
     if (sdy==0) res=0
   }
 
 
-  if (inherits(model.fit[1],"try-error"))
+  if (class(model.fit)[1]=="try-error")
   {
     message("Error fitting model, R call shown below:")
     print(mdl)
@@ -230,29 +233,43 @@ get_model_terms=function(model.fit)
 # Find Firth-penalized coefficients in Cox model
 # in case of monotone likelihood
 
+coxphf2 <- function(formula, data, model=T){
+  if(model){
+    col.names <- as.character(formula)
+    model <- data[,which(colnames(data) %in% col.names[-1])]
+  }
+  else{
+    model <- NULL
+  }
+  fit <- firth.coxph(dset=data, form=formula, use.pen=T)
+  res <- list(model, fit, fit$par)
+  names(res) <- c("model", "fit", "beta")
+  class(res) <- "coxphf2"
+  return(res)
+}
+
 firth.neg.logL=function(beta,dset,form,use.pen=F)
 {
-  cox.res0=survival::coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
+  cox.res0=coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
   logL=cox.res0$loglik[1]
-  fpen=0.5*log(sum(diag(MASS::ginv(cox.res0$var))))
+  fpen=0.5*log(sum(diag(ginv(cox.res0$var))))
 
   if (!use.pen) fpen=0
 
   res=-logL-fpen
-  print(c(beta=beta,logL=logL,firth=fpen,pen.logL=logL+fpen))
+  #print(c(beta=beta,logL=logL,firth=fpen,pen.logL=logL+fpen))
   return(res)
 }
 
 firth.coxph=function(dset,form,use.pen=T)
 {
-  cox.fit=survival::coxph(form,data=dset,control=coxph.control(iter.max=0))
-  res=stats::nlminb(start=cox.fit$coef,
+  cox.fit=coxph(form,data=dset,control=coxph.control(iter.max=0))
+  res=nlminb(start=cox.fit$coef,
              objective=firth.neg.logL,
              dset=dset,form=form,
              use.pen=use.pen)
   return(res)
 }
-
 
 
 

@@ -15,7 +15,7 @@
 #' data(setdat)
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
-#'                                  set.anns=NULL, n.boot=100, seed=123)
+#'                                  set.anns=NULL, n.boot=10, seed=123)
 #' #Without adjustment
 #' prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "OS", "EFS"))
 #' # With adjustment
@@ -44,7 +44,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
+        temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
         message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
       }
       else if(inherits(temp.ep.vec, "numeric")){
@@ -106,7 +106,7 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name,"; Note that you must specify adjustment variables in mdl string."))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
+        temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
         message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
       }
       else if(inherits(temp.ep.vec, "numeric")){

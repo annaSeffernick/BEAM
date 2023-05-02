@@ -18,7 +18,7 @@
 #' data(setdat)
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
-#'                                  set.anns=NULL, n.boot=100, seed=123)
+#'                                  set.anns=NULL, n.boot=10, seed=123)
 prep_beam_data=function(main.data,
                         mtx.data,
                         mtx.anns=NULL,

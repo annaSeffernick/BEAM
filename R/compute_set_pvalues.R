@@ -15,7 +15,7 @@
 #' @examples
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
-#'                                  set.anns=NULL, n.boot=100, seed=123)
+#'                                  set.anns=NULL, n.boot=10, seed=123)
 #' specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"))
 #' test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs)
 #' test.pvals <- compute_set_pvalues(beam.stats=test.beam.stats)
