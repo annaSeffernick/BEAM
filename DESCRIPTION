@@ -17,6 +17,9 @@ LazyData: true
 URL: https://github.com/annaSeffernick/BEAM
 BugReports: https://github.com/annaSeffernick/BEAM/issues
 Imports: 
-    survival,
+    magrittr,
     MASS,
-    stats
+    stats,
+    survival,
+    dplyr,
+    purrr
