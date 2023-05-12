@@ -5,7 +5,7 @@
 #' @param beam.result A beam.stats object from compute_beam_stats
 #' @param beam.set.pvals A list containing BEAM set p-values from compute_set_pvalues; required if p.limit or q.limit are specified.
 #' @param beam.feat.pvals A list containing feature-level p-values from compute_feature_pvalues; required if p.feat.limit or q.feat.limit are specified.
-#' @param mtx.rows A data frame with mtx.id and row.id, in the format of beam.data$set.data. If specified, filter to these sets.
+#' @param mtx.rows A list of vectors of feature names corresponding to row.id in set.data. List names correspond to mtx.id in set.data. If specified, filter to all sets containing at least one of these features.
 #' @param set.ids A character vector of set.ids. If specified, filter to these sets.
 #' @param endpts A character vector of endpoint names. If specified, filter to sets that correspond to these endpoints.
 #' @param omics A character vector of omics names. If specified, fitler to sets that correspond to these omics.
@@ -14,6 +14,7 @@
 #' @param p.feat.limit A numeric value. If specified, determine mtx.rows that are below this threshold if p.feat<1 or top p.feat sets if p.feat>1 (feature p-values).
 #' @param q.feat.limit A numeric value. If specified, determine mtx.rows that are below this threshold if q.feat<1 or top q.feat sets if q.feat>1.
 #' @param intersect A logical value. Default is TRUE. If TRUE, use intersection of all specified criteria. If FALSE use union of all specified criteria.
+#' @param recalc A logical value. Default is FALSE. If TRUE, recalculate p-values. If FALSE use original set p-values..
 #'
 #' @return A list with filtered beam.stats object, updated beam.set.pvals, and filtered beam.feat.pvals.
 #' @importFrom dplyr inner_join
@@ -30,19 +31,12 @@
 #' test.pvals <- compute_set_pvalues(beam.stats=test.beam.stats)
 #' test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
 #' filt.beam.stats <- subset_beam_result(test.beam.stats, test.pvals, test.feat.pvals,
-#'                                       endpts=c("EFS", "OS"), q.limit=10, intersect=TRUE)
-subset_beam_result <- function(beam.result,
-                               beam.set.pvals=NULL,
-                               beam.feat.pvals=NULL,
-                               mtx.rows=NULL,
-                               set.ids=NULL,
-                               endpts=NULL,
-                               omics=NULL,
-                               p.limit=NULL,
-                               q.limit=50,
-                               p.feat.limit=NULL,
-                               q.feat.limit=NULL,
-                               intersect=TRUE)
+#'                                       endpts=c("EFS", "OS"), q.limit=10, intersect=TRUE,
+#'                                       recalc=FALSE)
+subset_beam_result <- function(beam.result, beam.set.pvals=NULL, beam.feat.pvals=NULL,
+                               mtx.rows=NULL, set.ids=NULL, endpts=NULL, omics=NULL,
+                               p.limit=NULL, q.limit=50, p.feat.limit=NULL,
+                               q.feat.limit=NULL, intersect=TRUE, recalc=FALSE)
 {
   if(all(is.null(c(mtx.rows, set.ids, endpts, omics, p.limit, q.limit, p.feat.limit, q.feat.limit))))
     stop("You must specify a filtering criteria!")
@@ -55,7 +49,7 @@ subset_beam_result <- function(beam.result,
   res.feat.p <- NA
   res.feat.q <- NA
   if(!is.null(mtx.rows)){
-    res.mtx.row <- filter_mtx_rows(beam.stats=beam.result, mtx.rows=mtx.rows)
+    res.mtx.row <- filter_mtx_rows(beam.stats=beam.result, mtx.rows.list=mtx.rows)
   }
   if(!is.null(set.ids)){
     res.set.id <- filter_setids(beam.stats=beam.result, set.ids=set.ids)
@@ -67,13 +61,9 @@ subset_beam_result <- function(beam.result,
     res.omics <- filter_omics(beam.stats=beam.result, omics=omics)
   }
   if(!is.null(p.limit)){
-    if(is.null(beam.set.pvals))
-      stop("You must specify beam.set.pvals to filter with p.limit!")
     res.p <- filter_pval(beam.stats=beam.result, beam.pvalues=beam.set.pvals, p.limit=p.limit)
   }
   if(!is.null(q.limit)){
-    if(is.null(beam.set.pvals))
-      stop("You must specify beam.set.pvals to filter with q.limit!")
     res.q <- filter_qval(beam.stats=beam.result, beam.pvalues=beam.set.pvals, q.limit=q.limit)
   }
   if(!is.null(p.feat.limit)){
@@ -90,7 +80,12 @@ subset_beam_result <- function(beam.result,
   n.res <- length(which(!is.na(res.list)))
   if(n.res==1){
     beam.stat.res <- res.list[[which(!is.na(res.list))]]
-    beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+    if(recalc){
+      beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+    }
+    beam.set.pvals.res <- beam.set.pvals
+    beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+    beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
     beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
     res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
     names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")
@@ -106,18 +101,28 @@ subset_beam_result <- function(beam.result,
       set.list.filt[[m]] <- set.temp
     }
     if(intersect){
-      set.int <- set.list.filt %>% purrr::reduce(dplyr::inner_join)
-      beam.stat.res <- filter_mtx_rows(beam.stats=beam.result, mtx.rows=set.int[,c("mtx.id", "row.id")])
-      beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+      set.int <- set.list.filt %>% reduce(inner_join)
+      beam.stat.res <- filter_set_data_rows(beam.stats=beam.result, set.data.rows=set.int)
+      if(recalc){
+        beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+      }
+      beam.set.pvals.res <- beam.set.pvals
+      beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
       beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
       res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
       names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")
       return(res.list)
     }
     else{
-      set.int <- set.list.filt %>% purrr::reduce(dplyr::full_join)
-      beam.stat.res <- filter_mtx_rows(beam.stats=beam.result, mtx.rows=set.int[,c("mtx.id", "row.id")])
-      beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+      set.uni <- set.list.filt %>% reduce(full_join)
+      beam.stat.res <- filter_set_data_rows(beam.stats=beam.result, set.data.rows=set.uni)
+      if(recalc){
+        beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
+      }
+      beam.set.pvals.res <- beam.set.pvals
+      beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
       beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
       res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
       names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")
@@ -155,8 +160,8 @@ filter_feat_qval <- function(beam.stats, feat.pvalues, q.feat.limit){
       stop(paste0("Your q.feat.limit, ", q.feat.limit, ", is smaller than the minimum feature-level q-value, ", min(feat.pvals.df$q), ". Please choose a larger value."))
     feat.pvals.filt <- feat.pvals.df[which(feat.pvals.df$q <= q.feat.limit),]
     row.id.filt <- feat.pvals.filt$id
-    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt),,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(q.feat.limit >= 1){
     feat.pvals.ord <- feat.pvals.df[order(feat.pvals.df$q, feat.pvals.df$p, abs(feat.pvals.df$beta)),]
@@ -166,8 +171,8 @@ filter_feat_qval <- function(beam.stats, feat.pvalues, q.feat.limit){
     }
     feat.pvals.ord.filt <- feat.pvals.ord[1:q.feat.limit,]
     row.id.filt <- feat.pvals.ord.filt$id
-    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), ,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   return(res)
 }
@@ -194,8 +199,8 @@ filter_feat_pval <- function(beam.stats, feat.pvalues, p.feat.limit){
       stop(paste0("Your p.feat.limit, ", p.feat.limit, ", is smaller than the minimum feature-level p-value, ", min(feat.pvals.df$p), ". Please choose a larger value."))
     feat.pvals.filt <- feat.pvals.df[which(feat.pvals.df$p <= p.feat.limit),]
     row.id.filt <- feat.pvals.filt$id
-    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), ,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(p.feat.limit >= 1){
     feat.pvals.ord <- feat.pvals.df[order(feat.pvals.df$p, abs(feat.pvals.df$beta)),]
@@ -205,8 +210,8 @@ filter_feat_pval <- function(beam.stats, feat.pvalues, p.feat.limit){
     }
     feat.pvals.ord.filt <- feat.pvals.ord[1:p.feat.limit,]
     row.id.filt <- feat.pvals.ord.filt$id
-    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$row.id %in% row.id.filt), ,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   return(res)
 }
@@ -221,8 +226,8 @@ filter_qval <- function(beam.stats, beam.pvalues, q.limit){
       stop(paste0("Your q.limit, ", q.limit, ", is smaller than the minimum set q-value, ", min(set.pvals$q.set), ". Please choose a larger value."))
     set.pvals.filt <- set.pvals[which(set.pvals$q.set <= q.limit),]
     set.id.filt <- set.pvals.filt$set.id
-    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt),,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(q.limit >= 1){
     set.pvals.ord <- set.pvals[order(set.pvals$q.set, set.pvals$p.set, set.pvals$distance.ratio),]
@@ -232,8 +237,8 @@ filter_qval <- function(beam.stats, beam.pvalues, q.limit){
     }
     set.pvals.ord.filt <- set.pvals.ord[1:q.limit,]
     set.id.filt <- set.pvals.ord.filt$set.id
-    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt),,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(q.limit < 0)
     stop(paste0("Your q.limit, ", q.limit, ", is not valid. It must be greater than 0."))
@@ -250,8 +255,8 @@ filter_pval <- function(beam.stats, beam.pvalues, p.limit){
       stop(paste0("Your p.limit, ", p.limit, ", is smaller than the minimum set p-value, ", min(set.pvals$p.set), ". Please choose a larger value."))
     set.pvals.filt <- set.pvals[which(set.pvals$p.set <= p.limit),]
     set.id.filt <- set.pvals.filt$set.id
-    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt),,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(p.limit >= 1){
     set.pvals.ord <- set.pvals[order(set.pvals$p.set, set.pvals$distance.ratio),]
@@ -261,8 +266,8 @@ filter_pval <- function(beam.stats, beam.pvalues, p.limit){
     }
     set.pvals.ord.filt <- set.pvals.ord[1:p.limit,]
     set.id.filt <- set.pvals.ord.filt$set.id
-    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt), c("mtx.id", "row.id"),drop=F]
-    res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+    mtx.rows <- set.data[which(set.data$set.id %in% set.id.filt),,drop=F]
+    res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
   }
   if(p.limit < 0)
     stop(paste0("Your p.limit, ", p.limit, ", is not valid. It must be greater than 0."))
@@ -280,8 +285,8 @@ filter_omics <- function(beam.stats, omics){
   if(any(!(omics %in% mtx)))
     warning(paste0("Omic ", omics[which(!(omics %in% mtx))], " not found in beam.stats. \n  "))
   # Filter set.data then call filter_mtx_rows
-  mtx.rows <- beam.stats$beam.data$set.data[which(beam.stats$beam.data$set.data$mtx.id %in% omics),c("mtx.id", "row.id"),drop=FALSE]
-  res <- filter_mtx_rows(beam.stats=beam.stats, mtx.rows=mtx.rows)
+  mtx.rows <- beam.stats$beam.data$set.data[which(beam.stats$beam.data$set.data$mtx.id %in% omics),,drop=FALSE]
+  res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=mtx.rows)
 }
 
 #######################################
@@ -317,14 +322,17 @@ filter_setids <- function(beam.stats, set.ids){
   if(length(set.mtch) < length(set.ids))
     message(paste0("set.ids ", set.ids[-which(set.ids %in% beam.stats$beam.data$set.data$set.id)]), " not found and will be excluded.")
   # Convert to mtx.rows
-  set.mtx.rows <- beam.stats$beam.data$set.data[set.mtch,c("mtx.id", "row.id"),drop=FALSE]
-  res <- filter_mtx_rows(beam.stats, set.mtx.rows)
+  set.mtx.rows <- beam.stats$beam.data$set.data[set.mtch,,drop=FALSE]
+  res <- filter_set_data_rows(beam.stats=beam.stats, set.data.rows=set.mtx.rows)
   return(res)
 }
 
 #####################################
 # Filter beam.stats by mtx.rows
-filter_mtx_rows <- function(beam.stats,mtx.rows){
+# mtx.rows = list of vectors of feature names, list names correspond to mtx.id names in beam.data$set.data
+filter_mtx_rows <- function(beam.stats,mtx.rows.list){
+  # convert mtx.rows to data.frame
+  mtx.rows <- list_to_df(mtx.rows.list)
   beam.stats.l <- beam.stats$beam.stats
   beam.data <- beam.stats$beam.data
   beam.specs <- beam.stats$beam.specs
@@ -378,6 +386,79 @@ filter_mtx_rows <- function(beam.stats,mtx.rows){
 
   return(res)
 }
+
+##################################################
+# Convert list entry to set.data type data.frame
+list_to_df <- function(mtx.list){
+  list.names <- names(mtx.list)
+  df.temp <- data.frame()
+  for(i in 1:length(mtx.list)){
+    df.entry <- cbind.data.frame(rep(list.names[[i]], times=length(mtx.list[[i]])), mtx.list[[i]])
+    df.temp <- rbind.data.frame(df.temp, df.entry)
+  }
+  colnames(df.temp) <- c("mtx.id", "row.id")
+  res <- df.temp
+  return(res)
+}
+
+#####################################
+# Filter beam.stats by set.data row: set.id, mtx.id, row.id
+#set.data.rows <- beam.stats$beam.data$set.data[1:5,]
+filter_set_data_rows <- function(beam.stats,set.data.rows){
+  beam.stats.l <- beam.stats$beam.stats
+  beam.data <- beam.stats$beam.data
+  beam.specs <- beam.stats$beam.specs
+  set.data <- beam.data$set.data
+  set.data$set.row <- paste(set.data$set.id, set.data$mtx.id, set.data$row.id, sep=",")
+  set.data.rows$set.row <- paste(set.data.rows$set.id, set.data.rows$mtx.id, set.data.rows$row.id, sep=",")
+  # Test to make sure mtx.rows are in beam.stats
+  set.mtch<-which(set.data$set.row %in% set.data.rows$set.row) # extract rows corresponding to the set.id
+  if(length(set.mtch)==0)
+    stop(paste0("Not all mtx.rows present in set.data \n", set.data.rows)) # stop if mtx.rows not found
+  mtch.set <- beam.data$set.data[set.mtch,,drop=FALSE] # extract relevant set.data with set.id, mtx.id, row.id columns
+
+  # Filter beam.stats, beam.specs, and beam.data
+  #n.set.rows<-length(mtch.set$set.id) # number of rows in set (number of omics types available?)
+  un.mtx <- unique(mtch.set$mtx.id) # number of unique mtx.id's
+  beam.specs.filt <- beam.specs[which(beam.specs$mtx %in% un.mtx),,drop=FALSE]
+  # Initialize beam.stats.filt
+  beam.stats.filt <- vector("list",length(beam.stats.l))
+  names(beam.stats.filt) <- names(beam.stats.l)
+  # Initialize filtered beam.data objects
+  mtx.data.filt <- vector("list", length(beam.data$mtx.data))
+  names(mtx.data.filt) <- names(beam.data$mtx.data)
+  mtx.anns.filt <- vector("list", length(beam.data$mtx.anns))
+  names(mtx.anns.filt) <- names(beam.data$mtx.data)
+  for(i in 1:length(un.mtx)){
+    name.filt <- beam.specs[which(un.mtx[i]==beam.specs$mtx),c("name")]
+    row.ids <- set.data.rows[which(set.data.rows$mtx.id==un.mtx[i]),c("row.id")]
+    # filter beam.stats
+    for(j in 1:length(name.filt)){
+      beam.stats.filt[[name.filt[j]]] <- as.data.frame(beam.stats.l[[name.filt[j]]][which(rownames(beam.stats.l[[name.filt[j]]])%in%row.ids),,drop=FALSE])
+    }
+    # filter beam.data
+    mtx.name <- un.mtx[i]
+    # filter beam.data$mtx.data
+    mtx.data.filt[[mtx.name]] <- beam.data$mtx.data[[mtx.name]][which(rownames(beam.data$mtx.data[[mtx.name]]) %in% row.ids),,drop=FALSE]
+    # filter beam.data$mtx.anns
+    mtx.anns.filt[[mtx.name]] <- beam.data$mtx.anns[[mtx.name]][which(beam.data$mtx.anns[[mtx.name]]$id %in% row.ids),,drop=FALSE]
+  }
+  beam.data.filt <- beam.data
+  beam.data.filt$mtx.data <- mtx.data.filt
+  beam.data.filt$mtx.anns <- mtx.anns.filt
+  beam.data.filt$set.data <- mtch.set
+  beam.data.filt$anns.mtch <- match_anns(mtx.anns.filt, mtx.data.filt)
+
+
+  # Package results as beam.stats object
+  res <- list(beam.stats=beam.stats.filt,
+              beam.specs=beam.specs.filt,
+              beam.data=beam.data.filt)
+  class(res) <- "beam.stats"
+
+  return(res)
+}
+
 
 
 #########################################

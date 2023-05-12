@@ -16,7 +16,8 @@ subset_beam_result(
   q.limit = 50,
   p.feat.limit = NULL,
   q.feat.limit = NULL,
-  intersect = TRUE
+  intersect = TRUE,
+  recalc = FALSE
 )
 }
 \arguments{
@@ -26,7 +27,7 @@ subset_beam_result(
 
 \item{beam.feat.pvals}{A list containing feature-level p-values from compute_feature_pvalues; required if p.feat.limit or q.feat.limit are specified.}
 
-\item{mtx.rows}{A data frame with mtx.id and row.id, in the format of beam.data$set.data. If specified, filter to these sets.}
+\item{mtx.rows}{A list of vectors of feature names corresponding to row.id in set.data. List names correspond to mtx.id in set.data. If specified, filter to all sets containing at least one of these features.}
 
 \item{set.ids}{A character vector of set.ids. If specified, filter to these sets.}
 
@@ -43,6 +44,8 @@ subset_beam_result(
 \item{q.feat.limit}{A numeric value. If specified, determine mtx.rows that are below this threshold if q.feat<1 or top q.feat sets if q.feat>1.}
 
 \item{intersect}{A logical value. Default is TRUE. If TRUE, use intersection of all specified criteria. If FALSE use union of all specified criteria.}
+
+\item{recalc}{A logical value. Default is FALSE. If TRUE, recalculate p-values. If FALSE use original set p-values..}
 }
 \value{
 A list with filtered beam.stats object, updated beam.set.pvals, and filtered beam.feat.pvals.
@@ -59,5 +62,6 @@ test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs
 test.pvals <- compute_set_pvalues(beam.stats=test.beam.stats)
 test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
 filt.beam.stats <- subset_beam_result(test.beam.stats, test.pvals, test.feat.pvals,
-                                      endpts=c("EFS", "OS"), q.limit=10, intersect=TRUE)
+                                      endpts=c("EFS", "OS"), q.limit=10, intersect=TRUE,
+                                      recalc=FALSE)
 }
