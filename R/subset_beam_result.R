@@ -26,7 +26,7 @@
 #' test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
 #'                                  mtx.anns=omicann, set.data=setdat,
 #'                                  set.anns=NULL, n.boot=10, seed=123)
-#' specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"))
+#' specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"), firth=TRUE)
 #' test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs)
 #' test.pvals <- compute_set_pvalues(beam.stats=test.beam.stats)
 #' test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
@@ -83,9 +83,11 @@ subset_beam_result <- function(beam.result, beam.set.pvals=NULL, beam.feat.pvals
     if(recalc){
       beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
     }
-    beam.set.pvals.res <- beam.set.pvals
-    beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
-    beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+    else{
+      beam.set.pvals.res <- beam.set.pvals
+      beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+    }
     beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
     res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
     names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")
@@ -106,9 +108,11 @@ subset_beam_result <- function(beam.result, beam.set.pvals=NULL, beam.feat.pvals
       if(recalc){
         beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
       }
-      beam.set.pvals.res <- beam.set.pvals
-      beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
-      beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      else{
+        beam.set.pvals.res <- beam.set.pvals
+        beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+        beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      }
       beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
       res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
       names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")
@@ -120,9 +124,11 @@ subset_beam_result <- function(beam.result, beam.set.pvals=NULL, beam.feat.pvals
       if(recalc){
         beam.set.pvals.res <- compute_set_pvalues(beam.stat.res)
       }
-      beam.set.pvals.res <- beam.set.pvals
-      beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
-      beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      else{
+        beam.set.pvals.res <- beam.set.pvals
+        beam.set.pvals.res$set.pvals <- beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+        beam.set.pvals.res$set.mtch <- beam.set.pvals$set.mtch[which(beam.set.pvals$set.mtch$set.id %in% beam.stat.res$beam.data$set.data$set.id),]
+      }
       beam.feat.pvals.res <- compute_feature_pvalues(beam.stat.res)
       res.list <- list(beam.stat.res, beam.set.pvals.res, beam.feat.pvals.res)
       names(res.list) <- c("beam.stats", "beam.set.pvals", "beam.feat.pvals")

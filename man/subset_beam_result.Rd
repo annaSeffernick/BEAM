@@ -57,7 +57,7 @@ Filter the beam.stats object from compute_beam_stats with various filtering crit
 test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
                                  mtx.anns=omicann, set.data=setdat,
                                  set.anns=NULL, n.boot=10, seed=123)
-specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"))
+specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"), firth=TRUE)
 test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs)
 test.pvals <- compute_set_pvalues(beam.stats=test.beam.stats)
 test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)

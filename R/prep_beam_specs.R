@@ -1,7 +1,10 @@
-#' Prepare beam.specs data.frame for BEAM model fitting
+#' Prepare beam.specs
+#'
+#' Prepare the beam.specs data.frame for BEAM model fitting. Specifies the univariate models needed to compute the BEAM set p-values.
 #'
 #' @param beam.data A beam.data object from prep_beam_data
 #' @param endpts A vector of endpoint variable names in main.data
+#' @param firth A logical value. If TRUE (defaul) fit Firth penalized Cox model to account for monotone likelihood in the presence of rare events or predictors. If FALSE fit usual Cox model.
 #' @param adjvars Default NULL, optional vector of adjustment variable names in main.data
 #' @param endptmdl Optional model specification data.frame with endpoint name column called "endpt" and model string column called "mdl"
 #'
@@ -17,10 +20,10 @@
 #'                                  mtx.anns=omicann, set.data=setdat,
 #'                                  set.anns=NULL, n.boot=10, seed=123)
 #' #Without adjustment
-#' prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "OS", "EFS"))
+#' prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "OS", "EFS"), firth=TRUE)
 #' # With adjustment
-#' prep_beam_specs(beam.data=test.beam.data, endpts=c("OS", "EFS"), adjvars=c("MRD29"))
-prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
+#' prep_beam_specs(beam.data=test.beam.data, endpts=c("OS", "EFS"), adjvars=c("MRD29"), firth=TRUE)
+prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmdl=NULL){
   # check that beam.data is a beam.data object
   if(!inherits(beam.data, "beam.data"))
     stop("beam.data must be  beam.data object from prep_beam_data")
@@ -44,8 +47,15 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
-        message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
+        if(firth){
+          temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
+          message(paste0(temp.ep.name," is survival endpoint, fitting coxphf2"))
+        }
+        else{
+          temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
+          message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
+        }
+
       }
       else if(inherits(temp.ep.vec, "numeric")){
         uni.len <- length(unique(temp.ep.vec))
@@ -106,8 +116,15 @@ prep_beam_specs <- function(beam.data, endpts, adjvars=NULL, endptmdl=NULL){
         message(paste0("Fitting ", temp.mdl, " for ", temp.ep.name,"; Note that you must specify adjustment variables in mdl string."))
       }
       else if(inherits(temp.ep.vec, "Surv")){
-        temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
-        message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
+        if(firth){
+          temp.mdl <- paste0("coxphf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
+          message(paste0(temp.ep.name," is survival endpoint, fitting coxphf2"))
+        }
+        else{
+          temp.mdl <- paste0("coxph(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
+          message(paste0(temp.ep.name," is survival endpoint, fitting coxph"))
+        }
+
       }
       else if(inherits(temp.ep.vec, "numeric")){
         uni.len <- length(unique(temp.ep.vec))

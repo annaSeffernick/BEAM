@@ -2,14 +2,22 @@
 % Please edit documentation in R/prep_beam_specs.R
 \name{prep_beam_specs}
 \alias{prep_beam_specs}
-\title{Prepare beam.specs data.frame for BEAM model fitting}
+\title{Prepare beam.specs}
 \usage{
-prep_beam_specs(beam.data, endpts, adjvars = NULL, endptmdl = NULL)
+prep_beam_specs(
+  beam.data,
+  endpts,
+  firth = TRUE,
+  adjvars = NULL,
+  endptmdl = NULL
+)
 }
 \arguments{
 \item{beam.data}{A beam.data object from prep_beam_data}
 
 \item{endpts}{A vector of endpoint variable names in main.data}
+
+\item{firth}{A logical value. If TRUE (defaul) fit Firth penalized Cox model to account for monotone likelihood in the presence of rare events or predictors. If FALSE fit usual Cox model.}
 
 \item{adjvars}{Default NULL, optional vector of adjustment variable names in main.data}
 
@@ -19,7 +27,7 @@ prep_beam_specs(beam.data, endpts, adjvars = NULL, endptmdl = NULL)
 beam.specs, a data.frame specifying the omics-endpoint association models to be fit
 }
 \description{
-Prepare beam.specs data.frame for BEAM model fitting
+Prepare the beam.specs data.frame for BEAM model fitting. Specifies the univariate models needed to compute the BEAM set p-values.
 }
 \examples{
 data(clinf)
@@ -30,7 +38,7 @@ test.beam.data <- prep_beam_data(main.data=clinf, mtx.data=omicdat,
                                  mtx.anns=omicann, set.data=setdat,
                                  set.anns=NULL, n.boot=10, seed=123)
 #Without adjustment
-prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "OS", "EFS"))
+prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "OS", "EFS"), firth=TRUE)
 # With adjustment
-prep_beam_specs(beam.data=test.beam.data, endpts=c("OS", "EFS"), adjvars=c("MRD29"))
+prep_beam_specs(beam.data=test.beam.data, endpts=c("OS", "EFS"), adjvars=c("MRD29"), firth=TRUE)
 }
