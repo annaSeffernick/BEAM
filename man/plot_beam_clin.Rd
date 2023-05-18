@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_beam_clin.R
 \name{plot_beam_clin}
 \alias{plot_beam_clin}
-\title{Plot BEAM Omic/Endpoint Associations}
+\title{Plot BEAM Sets}
 \usage{
 plot_beam_clin(
   beam.result,

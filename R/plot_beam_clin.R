@@ -1,4 +1,4 @@
-#' Plot BEAM Omic/Endpoint Associations
+#' Plot BEAM Sets
 #'
 #' plot_beam_clin produces a matrix of feature level clinical plots for a set. Users can specify which omic/endpoint pairs they want to see as well as the number of features from the set. Default is all omic/endpoint pairs and the top feature (smallest feature-level p-value).
 #'
