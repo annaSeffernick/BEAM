@@ -41,14 +41,14 @@ prep_beam_plot <- function(beam.data, beam.specs){
     omic.type <- ifelse(length(unique(omic.vec))<=4, "factor", class(omic.vec))
     if(inherits(temp.ep.vec, "Surv")){
       if(omic.type=="factor"){
-        plot.vec[i] <- paste0("ggsurvplot(survfit(", temp.ep.name, "~mtx.row.fac, data=main.data), data=main.data, legend='right', legend.title='",
+        plot.vec[i] <- paste0("survminer::ggsurvplot(survfit(", temp.ep.name, "~mtx.row.fac, data=main.data), data=main.data, legend='right', legend.title='",
                               omic,"', legend.labs=c(paste0(levels(main.data$mtx.row.fac))), ylab='",
                               temp.ep.name," Probability', font.x=12, font.y=12)")
 
       } # if omic type factor
       else{
         # continuous omic - dichotomize at median
-        plot.vec[i] <- paste0("ggsurvplot(survfit(", temp.ep.name, "~(mtx.row>median(mtx.row, na.rm=T)), data=main.data), data=main.data, legend='right', legend.title='",
+        plot.vec[i] <- paste0("survminer::ggsurvplot(survfit(", temp.ep.name, "~(mtx.row>median(mtx.row, na.rm=T)), data=main.data), data=main.data, legend='right', legend.title='",
                               omic,"', legend.labs=c('High', 'Low'), ylab='",
                               temp.ep.name," Probability', font.x=12, font.y=12)")
       } # else omic type numeric
@@ -58,40 +58,40 @@ prep_beam_plot <- function(beam.data, beam.specs){
       if(uni.len<=4){
         if(omic.type=="factor"){
           # factor factor make mosaic plot - remove na
-          plot.vec[i] <- paste0("ggplot(data=main.data)+geom_mosaic(aes(x=product(", temp.ep.name, ",mtx.row)), na.rm=TRUE) + geom_mosaic_text(aes(x=product(",
-                                temp.ep.name,", mtx.row), label=after_stat(.wt)), na.rm=TRUE, color='white') + xlab('",
-                                omic,"')+ylab('", temp.ep.name,"')+theme(legend.position='none')")
+          plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggmosiac::geom_mosaic(aes(x=product(", temp.ep.name, ",mtx.row)), na.rm=TRUE) + ggmosaic::geom_mosaic_text(aes(x=product(",
+                                temp.ep.name,", mtx.row), label=after_stat(.wt)), na.rm=TRUE, color='white') + ggplot2::xlab('",
+                                omic,"')+ggplot2::ylab('", temp.ep.name,"')+ggplot2::theme(legend.position='none')")
         }# end omic type factor
         else{
           # factor endpoint with continuous omic make boxplot
-          plot.vec[i] <- paste0("ggplot(data=main.data)+geom_boxplot(aes(x=as.factor(",
-                                temp.ep.name, "), y=mtx.row)) + ylab('", omic,"')+xlab('",
+          plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggplot2::geom_boxplot(aes(x=as.factor(",
+                                temp.ep.name, "), y=mtx.row)) + ggplot2::ylab('", omic,"')+ggplot2::xlab('",
                                 temp.ep.name,"')")
         } # end else omic not type factor
       } # end if numeric has uni.len<=4
       else{
         if(omic.type=="factor"){
           # continuous endpoint, factor omic, make boxplot
-          plot.vec[i] <- paste0("ggplot(data=main.data)+geom_boxplot(aes(x=mtx.row.fac, y=",
-                                temp.ep.name,")) + ylab('", temp.ep.name,"')+xlab('",omic,"')")
+          plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggplot2::geom_boxplot(aes(x=mtx.row.fac, y=",
+                                temp.ep.name,")) + ggplot2::ylab('", temp.ep.name,"')+ggplot2::xlab('",omic,"')")
         } # end if omic type factor
         else{
           # continuous endpoint, continuous omic, make scatterplot
-          plot.vec[i] <- paste0("ggplot(data=main.data)+geom_point(aes(x=mtx.row, y=",
-                                temp.ep.name,")) + ylab('", temp.ep.name,"')+xlab('",omic,"')")
+          plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggplot2::geom_point(aes(x=mtx.row, y=",
+                                temp.ep.name,")) + ggplot2::ylab('", temp.ep.name,"')+ggplot2::xlab('",omic,"')")
 
         } # end else omic type not factor
       } # end else numeric truly continuous
     } # end else if numeric
     else if (inherits(temp.ep.vec, "factor")){
       if(omic.type=="factor"){
-        plot.vec[i] <- paste0("ggplot(data=main.data)+geom_mosaic(aes(x=product(", temp.ep.name, ",mtx.row)), na.rm=TRUE) + geom_mosaic_text(aes(x=product(",
-                              temp.ep.name,", mtx.row), label=after_stat(.wt)), na.rm=TRUE, color='white') + xlab('",
-                              omic,"')+ylab('", temp.ep.name,"')+theme(legend.position='none')")
+        plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggmosaic::geom_mosaic(aes(x=product(", temp.ep.name, ",mtx.row)), na.rm=TRUE) + ggmosaic::geom_mosaic_text(aes(x=product(",
+                              temp.ep.name,", mtx.row), label=after_stat(.wt)), na.rm=TRUE, color='white') + ggplot2::xlab('",
+                              omic,"')+ggplot2::ylab('", temp.ep.name,"')+ggplot2::theme(legend.position='none')")
       }# end if omic type factor
       else{
-        plot.vec[i] <- paste0("ggplot(data=main.data)+geom_boxplot(aes(x=as.factor(",
-                              temp.ep.name, "), y=mtx.row)) + ylab('", omic,"')+xlab('",
+        plot.vec[i] <- paste0("ggplot2::ggplot(data=main.data)+ggplot2::geom_boxplot(aes(x=as.factor(",
+                              temp.ep.name, "), y=mtx.row)) + ggplot2::ylab('", omic,"')+ggplot2::xlab('",
                               temp.ep.name,"')")
       } # end else not factor
     } # end else if factor

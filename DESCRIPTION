@@ -22,4 +22,9 @@ Imports:
     stats,
     survival,
     dplyr,
-    purrr
+    purrr,
+    ggplot2,
+    ggpubr,
+    ggmosaic,
+    survminer,
+    rlist
