@@ -153,6 +153,11 @@ Finally, we have some functions to visualize the results. First we need to updat
 ```{r}
 plot.specs <- prep_beam_plot(beam.data=beam.data, beam.specs=beam.specs)
 ```
+
+```{r}
+plot.specs
+```
+
 We can plot the top features (smallest feature-level p-value) for a specified set using the `plot_beam_clin()` function.
 
 ```{r, fig.height=7, fig.width=10}
