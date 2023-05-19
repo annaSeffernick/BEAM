@@ -1,4 +1,4 @@
-#' Title
+#' Check that beam.specs satisfies all necessary conditions
 #'
 #' @param beam.specs A data.frame with column name, mtx, and mdl
 #' @param mtx.names A vector with the names of the data matrices (beam.data$mtx.data)

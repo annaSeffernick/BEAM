@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_beam_specs.R
 \name{check_beam_specs}
 \alias{check_beam_specs}
-\title{Title}
+\title{Check that beam.specs satisfies all necessary conditions}
 \usage{
 check_beam_specs(beam.specs, mtx.names)
 }
@@ -15,7 +15,7 @@ check_beam_specs(beam.specs, mtx.names)
 A data.frame of beam.specs if all conditions satisfied, otherwise throws an error
 }
 \description{
-Title
+Check that beam.specs satisfies all necessary conditions
 }
 \examples{
 data(clinf)

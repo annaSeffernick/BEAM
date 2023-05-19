@@ -12,6 +12,7 @@ Integrate multiple forms of high dimensional genomic data with multiple clinical
 Useful links:
 \itemize{
   \item \url{https://github.com/annaSeffernick/BEAM}
+  \item \url{https://annaseffernick.github.io/BEAM/}
   \item Report bugs at \url{https://github.com/annaSeffernick/BEAM/issues}
 }
 

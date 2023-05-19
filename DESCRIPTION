@@ -29,3 +29,5 @@ Imports:
     ggmosaic,
     survminer,
     rlist
+Suggests: 
+    rmarkdown
