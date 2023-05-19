@@ -14,7 +14,8 @@ RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10)
 LazyData: true
-URL: https://github.com/annaSeffernick/BEAM
+URL: https://github.com/annaSeffernick/BEAM,
+    https://annaseffernick.github.io/BEAM/
 BugReports: https://github.com/annaSeffernick/BEAM/issues
 Imports: 
     magrittr,
