@@ -23,7 +23,7 @@ Useful links:
 Authors:
 \itemize{
   \item Stanley Pounds \email{stanley.pounds@stjude.org}
-  \item Xueyuan xcao12@uthsc.edu Cao
+  \item Xueyuan Cao \email{xcao12@uthsc.edu}
 }
 
 }
