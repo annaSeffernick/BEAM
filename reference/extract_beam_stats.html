@@ -76,105 +76,32 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">test.beam.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="prep_beam_data.html">prep_beam_data</a></span><span class="op">(</span>main.data<span class="op">=</span><span class="va">clinf</span>, mtx.data<span class="op">=</span><span class="va">omicdat</span>,</span></span>
 <span class="r-in"><span>                                 mtx.anns<span class="op">=</span><span class="va">omicann</span>, set.data<span class="op">=</span><span class="va">setdat</span>,</span></span>
 <span class="r-in"><span>                                 set.anns<span class="op">=</span><span class="cn">NULL</span>, n.boot<span class="op">=</span><span class="fl">10</span>, seed<span class="op">=</span><span class="fl">123</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Checking inputs: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking that each element of mtx.data is a matrix: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking that each element of mtx.anns is a data.frame: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Aligning main.data with each mtx.data: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.data Lesion (1 of 2): Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.data RNA (2 of 2): Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Checking inputs: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking that each element of mtx.data is a matrix: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking that each element of mtx.anns is a data.frame: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Aligning main.data with each mtx.data: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.data Lesion (1 of 2): Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.data RNA (2 of 2): Fri Jul 21 21:28:37 2023</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some ids not matched; returning NAs for those.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.anns: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Matching matrix 1 with annotations: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Matching matrix 2 with annotations: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking set.data: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Ordering and indexing set.data: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Checking section 1 of 40 of set.data: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Generating bootstrap index matrix: Fri Jul 21 19:34:42 2023</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Packaging and returning result: Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on mtx.anns: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Matching matrix 1 with annotations: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Matching matrix 2 with annotations: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Checking set.data: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Ordering and indexing set.data: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Checking section 1 of 40 of set.data: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Generating bootstrap index matrix: Fri Jul 21 21:28:37 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Packaging and returning result: Fri Jul 21 21:28:37 2023</span>
 <span class="r-in"><span><span class="va">specs</span> <span class="op">&lt;-</span> <span class="fu"><a href="prep_beam_specs.html">prep_beam_specs</a></span><span class="op">(</span>beam.data<span class="op">=</span><span class="va">test.beam.data</span>, endpts<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MRD29"</span>, <span class="st">"EFS"</span><span class="op">)</span>, firth<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> MRD29 is continuous, fitting lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> EFS is survival endpoint, fitting coxphf2</span>
 <span class="r-in"><span><span class="va">test.beam.stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_beam_stats.html">compute_beam_stats</a></span><span class="op">(</span>beam.data<span class="op">=</span><span class="va">test.beam.data</span>, beam.specs<span class="op">=</span><span class="va">specs</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> main.data: 265 rows and 8 columns. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            ID MRD29 RNA.clm Lesion.clm Lesion.id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PARASZ PARASZ  0.00      46         21    PARASZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PARAYM PARAYM  0.00      47        108    PARAYM</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PARCVM PARCVM  0.00      15         84    PARCVM</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PAREGZ PAREGZ  0.49     170        142    PAREGZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PARFDL PARFDL  0.00     184        175    PARFDL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mtx.data: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mtx.data Lesion: 265 columns linked to 265 rows of main.data. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mtx.data RNA: 264 columns linked to 264 rows of main.data. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lesion: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          PARWNW PASXUC PATXNR PASYIS PATBGC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000264545_loss          1      1      1      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000147889_loss          1      1      1      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000224854_loss          1      1      1      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000148400_mutation      1      1      1      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000099810_loss          1      1      1      1      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RNA: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    PARFIH     PARFPJ     PARFXJ     PARKLK     PARLJA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000121410 0.4976379 0.29994795 1.13973142 0.32584690 0.35940872</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000148584 0.0000000 0.00000000 0.00000000 0.00000000 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000175899 0.0176369 0.11316706 0.02913480 0.00992041 0.02672925</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000166535 0.0000000 0.02261638 0.01278318 0.01735184 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENSG00000184389 0.1067503 1.46126661 0.32734246 0.56042150 0.49385225</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mtx.anns: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Lesion: 20 rows and 2 columns. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   RNA: 20 rows and 2 columns. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lesion: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         id            gene</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     ENSG00000264545_loss ENSG00000264545</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     ENSG00000147889_loss ENSG00000147889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     ENSG00000224854_loss ENSG00000224854</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 ENSG00000148400_mutation ENSG00000148400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     ENSG00000099810_loss ENSG00000099810</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RNA: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                id            gene</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 ENSG00000121410 ENSG00000121410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 ENSG00000148584 ENSG00000148584</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 ENSG00000175899 ENSG00000175899</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 ENSG00000166535 ENSG00000166535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 ENSG00000184389 ENSG00000184389</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> anns.mtch: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mtx.data mtx.anns id.clm nrow.mtx nrow.ann nrow.map</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   Lesion   Lesion     id       20       20       20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      RNA      RNA     id       20       20       20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> set.data: 40 rows assigning sets to data.mtx rows. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             set.id mtx.id               row.id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  ENSG00000081760    RNA      ENSG00000081760</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  ENSG00000094914    RNA      ENSG00000094914</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25 ENSG00000099810 Lesion ENSG00000099810_loss</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 ENSG00000099810    RNA      ENSG00000099810</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 ENSG00000109576    RNA      ENSG00000109576</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 ENSG00000114771    RNA      ENSG00000114771</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> set.anns:  rows of set annotations.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> boot.index: 11 rows and 265 columns of bootstrap indices. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    2    3    4    5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  179   14  195  118  229</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  108    8  114  261   29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,]   55   19  241  218  155</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,]  145  200  211   69   46</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           name    mtx                                         mdl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 Lesion.MRD29 Lesion    lm(MRD29~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    RNA.MRD29    RNA    lm(MRD29~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3   Lesion.EFS Lesion coxphf2(EFS~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4      RNA.EFS    RNA coxphf2(EFS~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "matrix" "array" </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 1 of 4 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 1 of 4 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mtx                                      mdl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 Lesion lm(MRD29~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]</span>
@@ -477,7 +404,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]     31     31    234     11    137    189    201      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]     17    139    241     58    202    142    224    256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]     20    216     57    198    154    141    204     98</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  21 108  84 142 175  91 261 100 159 224  70 211  97 161 115 257  27 121</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 183  52 168  44 128 241 235 230 228  66 221  88  60 199  17  51  30 171</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  82 117 101  86 214 140 259 129 188  61 205 172 191 238 239 123  36 202</span>
@@ -638,7 +565,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235] 125 259  88  54  52  21 199  16 227 232 197 227 174 143 234  86 245  96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 143  21 189  49 172  27 232  32 181 119  71 122 244</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 178  81   2 259 228 118 148  32  59 254   6  84 211  17  83  81  99 189</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19]  85 145  27 189 240  97 253 255 194  99 263 147 103 140 254 163 213 114</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  12 229  83  50 104 223 259  52 206 101  15  87 112 257 175  90 154 111</span>
@@ -655,7 +582,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235] 258  17  89 207 234 145  50  43  13 129   5 174 136  23 239 159  66  83</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 140 252 210  11 262  52  47 253 222  57 155 263  33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 2 of 4 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 2 of 4 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mtx                                      mdl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 RNA lm(MRD29~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]</span>
@@ -958,7 +885,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]     31     31    234     11    137    189    201      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]     17    139    241     58    202    142    224    256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]     20    216     57    198    154    141    204     98</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  46  47  15 170 184   1   2   3  16 249 226  17  18  19  30  31  38  39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19]   4   5 186   6   7  20  21  22  23  32 227 183 185 261  40  41  35   8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]   9 171  10 189  11  24 193  25 262  26  27  33  42 187 153 224  43  36</span>
@@ -1119,7 +1046,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235]  34 193 183 237   5  46 261 201 222  80 211 222 240 105  88 189  83  49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 105  46 221 147  33  38  80 121  13 206 163 111 131</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  76 126  70 193  23 220 116 121 219  72 155  15  17  40  94 126 236 221</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 107 129  38 221 250  18 194  60 132 236 100 122 251  24  72 216  75  63</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 210 217  94 257 152 143 193   5 164  10 204 136 109  31 184 142 247 245</span>
@@ -1136,7 +1063,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235] 106  40 215 115  88 129 257 104  99  25 161 240  71  89 153  16  32  94</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253]  24 108 103 151 146   5 239 194 167  82 162 100  57</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 3 of 4 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 3 of 4 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mtx                                         mdl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 Lesion coxphf2(EFS~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]</span>
@@ -1439,7 +1366,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]     31     31    234     11    137    189    201      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]     17    139    241     58    202    142    224    256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]     20    216     57    198    154    141    204     98</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 19:34:42 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 21:28:37 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  21 108  84 142 175  91 261 100 159 224  70 211  97 161 115 257  27 121</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 183  52 168  44 128 241 235 230 228  66 221  88  60 199  17  51  30 171</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  82 117 101  86 214 140 259 129 188  61 205 172 191 238 239 123  36 202</span>
@@ -1600,7 +1527,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235] 125 259  88  54  52  21 199  16 227 232 197 227 174 143 234  86 245  96</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 143  21 189  49 172  27 232  32 181 119  71 122 244</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 19:34:50 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 21:28:46 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 178  81   2 259 228 118 148  32  59 254   6  84 211  17  83  81  99 189</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19]  85 145  27 189 240  97 253 255 194  99 263 147 103 140 254 163 213 114</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]  12 229  83  50 104 223 259  52 206 101  15  87 112 257 175  90 154 111</span>
@@ -1617,7 +1544,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235] 258  17  89 207 234 145  50  43  13 129   5 174 136  23 239 159  66  83</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 140 252 210  11 262  52  47 253 222  57 155 263  33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 4 of 4 : Fri Jul 21 19:34:51 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Working on analysis 4 of 4 : Fri Jul 21 21:28:47 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mtx                                         mdl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 RNA coxphf2(EFS~mtx.row,data=main.data,model=T)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]</span>
@@ -1920,7 +1847,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]     31     31    234     11    137    189    201      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]     17    139    241     58    202    142    224    256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]     20    216     57    198    154    141    204     98</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 19:34:51 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 0 of 11 : Fri Jul 21 21:28:47 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  46  47  15 170 184   1   2   3  16 249 226  17  18  19  30  31  38  39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19]   4   5 186   6   7  20  21  22  23  32 227 183 185 261  40  41  35   8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37]   9 171  10 189  11  24 193  25 262  26  27  33  42 187 153 224  43  36</span>
@@ -2081,7 +2008,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [235]  34 193 183 237   5  46 261 201 222  80 211 222 240 105  88 189  83  49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [253] 105  46 221 147  33  38  80 121  13 206 163 111 131</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  20 265</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 19:35:00 2023</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Working on bootstrap 10 of 11 : Fri Jul 21 21:28:56 2023</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]  76 126  70 193  23 220 116 121 219  72 155  15  17  40  94 126 236 221</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 107 129  38 221 250  18 194  60 132 236 100 122 251  24  72 216  75  63</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 210 217  94 257 152 143 193   5 164  10 204 136 109  31 184 142 247 245</span>
