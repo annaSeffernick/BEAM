@@ -31,7 +31,7 @@ compute_beam_stats=function(beam.data, beam.specs)
   if(!inherits(beam.data, "beam.data"))
     stop("beam.data must be the result of prep.beam.data.")
 
-  print(beam.data)
+  #print(beam.data)
   print(beam.specs)
 
   ##################################
