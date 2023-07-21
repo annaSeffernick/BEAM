@@ -40,7 +40,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
     beam.specs <- data.frame()
     for(j in 1:length(endpts)){
       temp.ep.name <- endpts[j]
-      temp.ep.vec <- mainData[,grep(temp.ep.name, colnames(mainData))]
+      temp.ep.vec <- mainData[, which(colnames(mainData)==temp.ep.name)]
       temp.ep.type <- class(temp.ep.vec)
       if(!is.null(endptmdl)){
         temp.mdl <- endptmdl[grep(temp.ep.name, endptmdl$endpt),]$mdl
@@ -109,7 +109,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
     beam.specs <- data.frame()
     for(j in 1:length(endpts)){
       temp.ep.name <- endpts[j]
-      temp.ep.vec <- mainData[,grep(temp.ep.name, colnames(mainData))]
+      temp.ep.vec <- mainData[, which(colnames(mainData)==temp.ep.name)]
       temp.ep.type <- class(temp.ep.vec)
       if(!is.null(endptmdl)){
         temp.mdl <- endptmdl[grep(temp.ep.name, endptmdl$endpt),]$mdl
