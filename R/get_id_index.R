@@ -40,9 +40,9 @@ get_id_index=function(mtch.data,
   if (length(id.mtch.index)>1000)
     id.mtch.index=sample(length(ids),1000,replace=F)
 
-  mtch.mtx=as.data.frame(t(apply(mtch.data,2,
-                                 is.element,ids[id.mtch.index]))) # check each column of mtch.data for matches
-  #mtch.mtx <- apply(mtch.data, 2, is.element, ids[id.mtch.index])
+  #mtch.mtx=as.data.frame(t(apply(mtch.data,2,
+  #                               is.element,ids[id.mtch.index]))) # check each column of mtch.data for matches
+  mtch.mtx <- apply(mtch.data, 2, is.element, ids[id.mtch.index])
   n.mtch=colSums(mtch.mtx)                      # compute number of matches
   mtch.clm=which.max(n.mtch)                    # find column with most matches
 
