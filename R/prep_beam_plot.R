@@ -35,7 +35,7 @@ prep_beam_plot <- function(beam.data, beam.specs){
     omic <- beam.specs$mtx[i]
     if(!(temp.ep.name %in% colnames(mainData)))
       stop(paste0("Endpoint ", temp.ep.name, " not found in columns of beam.data$main.data"))
-    temp.ep.vec <- mainData[,grep(temp.ep.name, colnames(mainData))]
+    temp.ep.vec <- mainData[,which(colnames(mainData)==temp.ep.name)]
     temp.ep.type <- class(temp.ep.vec)
     omic.vec <- beam.data$mtx.data[[omic]][1,]
     omic.type <- ifelse(length(unique(omic.vec))<=4, "factor", class(omic.vec))
