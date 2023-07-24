@@ -2,7 +2,7 @@ Package: BEAM
 Title: Bootstrap Evaluation of Association Matrices
 Version: 0.0.0.9000
 Authors@R: c(
-    person(given="Anna", family="Seffernick", middle="Eames", email="anna.seffernick@stjude.org", role = c("aut", "cre"),
+    person(given="Anna Eames", family="Seffernick", email="anna.seffernick@stjude.org", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0848-4604")),
            person(given="Stanley", family="Pounds", email="stanley.pounds@stjude.org", role=c("aut")),
            person(given="Xueyuan", family="Cao", email="xcao12@uthsc.edu", role=c("aut")))
@@ -10,7 +10,7 @@ Description: Integrate multiple forms of high dimensional genomic data with mult
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
 LazyData: true
@@ -28,6 +28,7 @@ Imports:
     ggpubr,
     ggmosaic,
     survminer,
-    rlist
+    rlist,
+    logistf
 Suggests: 
     rmarkdown

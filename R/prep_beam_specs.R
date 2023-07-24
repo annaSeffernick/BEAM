@@ -9,6 +9,7 @@
 #' @param endptmdl Optional model specification data.frame with endpoint name column called "endpt" and model string column called "mdl"
 #'
 #' @return beam.specs, a data.frame specifying the omics-endpoint association models to be fit
+#' @import logistf
 #' @export
 #'
 #' @examples
@@ -60,8 +61,14 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "numeric")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.fow,data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
         }
         else{
           temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row,data=main.data,model=T)")
@@ -71,8 +78,14 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "integer")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.fow,data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
         }
         else{
           temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family=poisson())")
@@ -82,8 +95,14 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "factor")){
         uni.lev <- length(levels(temp.ep.vec))
         if(uni.lev==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.fow,data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
         }
         else{
           stop(paste0(temp.ep.name," is a factor variable. Please input appropriate model using endptmdl."))
@@ -129,8 +148,14 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "numeric")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
         }
         else{
           temp.mdl <- paste0("lm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,model=T)")
@@ -140,8 +165,15 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "integer")){
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
+
         }
         else{
           temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,"data=main.data,family=poisson())")
@@ -151,8 +183,14 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
       else if(inherits(temp.ep.vec, "factor")){
         uni.lev <- length(levels(temp.ep.vec))
         if(uni.lev==2){
-          temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
-          message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          if(firth){
+            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            message(paste0(temp.ep.name," is binary, fitting logistf"))
+          }
+          else{
+            temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
+            message(paste0(temp.ep.name," is binary, fitting glm with family='binomial'"))
+          }
         }
         else{
           stop(paste0(temp.ep.name," is a factor variable. Please input appropriate model using endptmdl."))
