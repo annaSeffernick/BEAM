@@ -197,8 +197,15 @@ model_coef=function(x,main.data,mdl)
     # no variability in x or y after removing NAs
     sdx=sd(x.temp,na.rm=T)
     if (sdx==0) res=0
-    sdy=sd(y.temp,na.rm=T)
-    if (sdy==0) res=0
+    if(inherits(y.temp, "factor")){
+      if(all(duplicated(y.temp))){
+        res=0
+      }
+    }
+    else{
+      sdy=sd(y.temp,na.rm=T)
+      if (sdy==0) res=0
+    }
   }
 
 
