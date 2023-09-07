@@ -10,6 +10,7 @@
 #' @importFrom stats prcomp
 #' @importFrom stats p.adjust
 #' @importFrom stats predict
+#' @importFrom stats sd
 #' @export
 #'
 #' @examples
@@ -224,10 +225,24 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
   B.mtx=B0                                   # bootstrap association matrix
   b0=b=nrow(B.mtx)                           # number of bootstraps
 
+  # Check column variability in B.mtx
+  col.sd <- apply(B.mtx, 2, stats::sd)
+  # If there is a constant column, scale the other columns by hand to avoid prcomp error
+  if(any(col.sd==0)){
+    B.mtx.scale <- B.mtx
+    for(i in 1:ncol(B.mtx.scale)){
+      if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
+    }
+    pca.res=stats::prcomp(B.mtx.scale,
+                          center=cent,
+                          scale.=F)
+  }
+  else{
+    pca.res=stats::prcomp(B.mtx,                      # principal components for all bootstraps
+                          center=cent,                # use the observed result as the center
+                          scale.=z)               # user option for rescaling PCs before computing distance
 
-  pca.res=stats::prcomp(B.mtx,                      # principal components for all bootstraps
-                 center=cent,                # use the observed result as the center
-                 scale.=z)               # user option for rescaling PCs before computing distance
+  }
 
   null=matrix(0,1,ncol(B.mtx))               # define vector for null (origin: all coefs = 0)
   colnames(null)=colnames(B.mtx)             # assign column names
@@ -261,9 +276,24 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
 
         B.mtx=B.mtx[-max.indx,]
         b=nrow(B.mtx)                           # number of remaining bootstraps
-        pca.res=stats::prcomp(B.mtx,                   # principal components for all bootstraps
-                       center=cent,             # use the observed result as the center
-                       scale.=z)                # user option for rescaling PCs before computing distance
+        # Check column variability in B.mtx
+        col.sd <- apply(B.mtx, 2, stats::sd)
+        # If there is a constant column, scale the other columns by hand to avoid prcomp error
+        if(any(col.sd==0)){
+          B.mtx.scale <- B.mtx
+          for(i in 1:ncol(B.mtx.scale)){
+            if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
+          }
+          pca.res=stats::prcomp(B.mtx.scale,
+                                center=cent,
+                                scale.=F)
+        }
+        else{
+          pca.res=stats::prcomp(B.mtx,                      # principal components for all bootstraps
+                                center=cent,                # use the observed result as the center
+                                scale.=z)               # user option for rescaling PCs before computing distance
+
+        }
 
         null=matrix(0,1,ncol(B.mtx))            # define vector for null (origin: all coefs = 0)
         colnames(null)=colnames(B.mtx)          # assign column names

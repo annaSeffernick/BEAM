@@ -29,6 +29,7 @@ Imports:
     ggmosaic,
     survminer,
     rlist,
-    logistf
+    logistf,
+    stringr
 Suggests: 
     rmarkdown

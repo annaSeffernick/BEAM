@@ -8,10 +8,13 @@
 #' @importFrom stats sd
 #' @importFrom stats lm
 #' @importFrom stats nlminb
+#' @importFrom stats model.frame
 #' @importFrom survival coxph
 #' @importFrom survival coxph.control
 #' @importFrom survival Surv
 #' @importFrom MASS ginv
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_split_1
 #' @export
 #'
 #' @examples
@@ -138,6 +141,49 @@ model_coef=function(x,main.data,mdl)
 
   mnx=mean(x,na.rm=T)
   main.data$mtx.row=(x-mnx)/sdx
+
+  # check output before fitting cox models
+  if(grepl("coxph", mdl))
+  {
+    #model.terms=get_model_terms(model.fit)
+    formula <- parse(text=mdl)
+    form.char <- as.character(formula)
+    form.in <- stringr::str_extract_all(form.char,  "(?<=\\().+?(?=\\))")
+    form.in.spl <- stringr::str_split_1(form.in[[1]], "\\,")
+    mdl.frm <- stats::model.frame(formula=form.in.spl[1], data=main.data)
+    #mdl.frm
+
+    evtm=mdl.frm[,1][,1]
+    event=mdl.frm[,1][,2]
+    x.temp=mdl.frm[,grep("mtx.row", colnames(mdl.frm))]
+
+    # no events
+    if (is.null(event)) return(0)
+    if (mean(event,na.rm=T)==0) return(0)
+
+    # no variability in event time
+    if ((sd(evtm,na.rm=T)==0)&(mean(event,na.rm=T)==1)) return(0)
+
+    # no variability in x
+    if (sd(x.temp,na.rm=T)==0) return(0)
+
+    # no variability in x among those with observation times greater than or equal to shortest uncensored event time
+    evtm.cns <- cbind.data.frame(evtm, event)
+    evtm.or <- evtm.cns[order(evtm, decreasing=FALSE),]
+    evtm.or.evnt <- evtm.or[which(evtm.or$event==1),]
+    min.time <- evtm.or.evnt[which.min(evtm.or.evnt$evtm),1]
+    x.obs.mog <- x.temp[evtm>=min.time]
+    if(sd(x.obs.mog)==0) return(0)
+
+    # check for monotone likelihood
+    x.event=range(x.temp[event>0],na.rm=T)
+    x.none=range(x.temp[event==0],na.rm=T)
+    if(sd(x.event,na.rm=T)==0) return(0) # if x for cases with event has no variability, return 0
+
+    if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
+    if (all(x.none<=x.event[1])) return(Inf)  #
+  }
+
 
   model.fit=try(eval(parse(text=mdl)))
 
