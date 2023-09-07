@@ -228,7 +228,7 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
   # Check column variability in B.mtx
   col.sd <- apply(B.mtx, 2, stats::sd)
   # If there is a constant column, scale the other columns by hand to avoid prcomp error
-  if(any(col.sd==0)){
+  if(any(col.sd==0)&z){
     B.mtx.scale <- B.mtx
     for(i in 1:ncol(B.mtx.scale)){
       if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
@@ -279,7 +279,7 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
         # Check column variability in B.mtx
         col.sd <- apply(B.mtx, 2, stats::sd)
         # If there is a constant column, scale the other columns by hand to avoid prcomp error
-        if(any(col.sd==0)){
+        if(any(col.sd==0)&z){
           B.mtx.scale <- B.mtx
           for(i in 1:ncol(B.mtx.scale)){
             if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
