@@ -62,7 +62,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           if(firth){
-            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
+            temp.mdl <- paste0("logistf2(",temp.ep.name,"~mtx.row,data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
@@ -79,7 +79,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           if(firth){
-            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
+            temp.mdl <- paste0("logistf2(",temp.ep.name,"~mtx.row,data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
@@ -96,7 +96,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.lev <- length(levels(temp.ep.vec))
         if(uni.lev==2){
           if(firth){
-            temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
+            temp.mdl <- paste0("logistf2(",temp.ep.name,"~mtx.row,data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
@@ -149,7 +149,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           if(firth){
-            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            temp.mdl <- paste0("logistf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
@@ -166,7 +166,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.len <- length(unique(temp.ep.vec))
         if(uni.len==2){
           if(firth){
-            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            temp.mdl <- paste0("logistf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
@@ -184,7 +184,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         uni.lev <- length(levels(temp.ep.vec))
         if(uni.lev==2){
           if(firth){
-            temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
+            temp.mdl <- paste0("logistf2(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
             message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
