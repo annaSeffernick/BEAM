@@ -196,8 +196,8 @@ model_coef=function(x,main.data,mdl)
     }
 
     # Do we need to check this in coxphf if we're already accounting for montone likelihood?
-    if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
-    if (all(x.none<=x.event[1])) return(Inf)  #
+    #if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
+    #if (all(x.none<=x.event[1])) return(Inf)  #
   }
 
 
@@ -351,7 +351,9 @@ coxphf2 <- function(formula, data, model=T){
 
 firth.neg.logL=function(beta,dset,form,use.pen=F)
 {
-  cox.res0=coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
+  suppressWarnings({
+    cox.res0=coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
+  }) # suppress expected warning from coxph to get initial values
   logL=cox.res0$loglik[1]
   fpen=0.5*log(sum(diag(ginv(cox.res0$var))))
 
@@ -364,7 +366,9 @@ firth.neg.logL=function(beta,dset,form,use.pen=F)
 
 firth.coxph=function(dset,form,use.pen=T)
 {
-  cox.fit=coxph(form,data=dset,control=coxph.control(iter.max=0))
+  suppressWarnings({
+    cox.fit=coxph(form,data=dset,control=coxph.control(iter.max=0))
+  }) # suppress expected warning from coxph to get initial values
   res=nlminb(start=cox.fit$coef,
              objective=firth.neg.logL,
              dset=dset,form=form,
@@ -410,7 +414,9 @@ nlogL.logistic=function(beta,y,mdl.mtx,firth=F)
 firth.logistic=function(form,dset,firth=T)
 
 {
+  suppressWarnings({
   glm.res=stats::glm(form,data=dset,family=binomial)                             # use glm for initial fit
+  }) # suppress expected warnings from glm fit for initial values
   mdl.mtx=model.matrix(glm.res$model, data=dset)                                     # extract model matrix
   y.obs=glm.res$y                                                         # extract observed y
   nlm.res=stats::nlminb(start=glm.res$coefficients,                              # fit model with firth-penalized likelihood
