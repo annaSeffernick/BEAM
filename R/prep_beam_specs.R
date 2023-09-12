@@ -63,7 +63,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.len==2){
           if(firth){
             temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
@@ -80,7 +80,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.len==2){
           if(firth){
             temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
@@ -97,7 +97,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.lev==2){
           if(firth){
             temp.mdl <- paste0("logistf(",temp.ep.name,"~mtx.row,data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row,data=main.data,family='binomial')")
@@ -105,7 +105,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
           }
         }
         else{
-          stop(paste0(temp.ep.name," is a factor variable. Please input appropriate model using endptmdl."))
+          stop(paste0(temp.ep.name," is a factor variable with more than 2 levels. Please input appropriate model using endptmdl."))
         }
       }
       else{
@@ -150,7 +150,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.len==2){
           if(firth){
             temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
@@ -167,7 +167,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.len==2){
           if(firth){
             temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
@@ -185,7 +185,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
         if(uni.lev==2){
           if(firth){
             temp.mdl <- paste0("logistf(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data)")
-            message(paste0(temp.ep.name," is binary, fitting logistf"))
+            message(paste0(temp.ep.name," is binary, fitting logistf2"))
           }
           else{
             temp.mdl <- paste0("glm(", temp.ep.name,"~mtx.row+",adjvars.add,",data=main.data,family='binomial')")
@@ -193,7 +193,7 @@ prep_beam_specs <- function(beam.data, endpts, firth=TRUE, adjvars=NULL, endptmd
           }
         }
         else{
-          stop(paste0(temp.ep.name," is a factor variable. Please input appropriate model using endptmdl."))
+          stop(paste0(temp.ep.name," is a factor variable with more than 2 levels. Please input appropriate model using endptmdl."))
         }
       }
       else{

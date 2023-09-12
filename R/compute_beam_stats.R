@@ -9,6 +9,9 @@
 #' @importFrom stats lm
 #' @importFrom stats nlminb
 #' @importFrom stats model.frame
+#' @importFrom stats binomial
+#' @importFrom stats glm
+#' @importFrom stats model.matrix
 #' @importFrom survival coxph
 #' @importFrom survival coxph.control
 #' @importFrom survival Surv
@@ -143,7 +146,8 @@ model_coef=function(x,main.data,mdl)
   main.data$mtx.row=(x-mnx)/sdx
 
   # check output before fitting cox models
-  if(grepl("coxph", mdl))
+  # check output before fitting cox models
+  if(grepl("coxphf", mdl))
   {
     #model.terms=get_model_terms(model.fit)
     formula <- parse(text=mdl)
@@ -178,8 +182,20 @@ model_coef=function(x,main.data,mdl)
     # check for monotone likelihood
     x.event=range(x.temp[event>0],na.rm=T)
     x.none=range(x.temp[event==0],na.rm=T)
-    if(sd(x.event,na.rm=T)==0) return(0) # if x for cases with event has no variability, return 0
+    if(sd(x.event,na.rm=T)==0){
+      model.fit=try(eval(parse(text=mdl)))
+      if(inherits(model.fit, class("try.error"))){
+        return(0) # if x for cases with event has no variability, return 0 if model can't be fit?
+      }
+      else{
+        beta=model.fit$beta
+        mtx.ind <- which(names(beta)=="mtx.row")
+        res <- beta[mtx.ind]
+        return(res)
+      }
+    }
 
+    # Do we need to check this in coxphf if we're already accounting for montone likelihood?
     if (all(x.none>=x.event[2])) return(-Inf) # if x for cases with no event is always less than x for cases with event
     if (all(x.none<=x.event[1])) return(Inf)  #
   }
@@ -199,6 +215,38 @@ model_coef=function(x,main.data,mdl)
   #################################
   # special case of coxphf2
   if(inherits(model.fit, "coxphf2")){
+    beta=model.fit$beta
+    mtx.ind <- which(names(beta)=="mtx.row")
+    res <- beta[mtx.ind]
+  }
+
+  #################################
+  # special case of logistf2
+  if(inherits(model.fit, "logistf2")){
+    formula <- parse(text=mdl)
+    form.char <- as.character(formula)
+    form.in <- stringr::str_extract_all(form.char,  "(?<=\\().+?(?=\\))")
+    form.in.spl <- stringr::str_split_1(form.in[[1]], "\\,")
+    mdl.frm <- stats::model.frame(formula=form.in.spl[1], data=main.data)
+
+    #model.terms=get_model_terms(model.fit)
+    y.temp=mdl.frm[,1]
+    x.temp=mdl.frm[,2]
+
+    # no variability in x or y after removing NAs
+    sdx=sd(x.temp,na.rm=T)
+    if (sdx==0) res=0
+    if(inherits(y.temp, "factor")){
+      if(all(duplicated(y.temp))){
+        res=0
+      }
+    }
+    else{
+      sdy=sd(y.temp,na.rm=T)
+      if (sdy==0) res=0
+    }
+
+    # If doesn't fail, return beta
     beta=model.fit$beta
     mtx.ind <- which(names(beta)=="mtx.row")
     res <- beta[mtx.ind]
@@ -321,6 +369,56 @@ firth.coxph=function(dset,form,use.pen=T)
              objective=firth.neg.logL,
              dset=dset,form=form,
              use.pen=use.pen)
+  return(res)
+}
+
+###########################################################
+# Find Firth-penalized coefficients in logistic model
+# in case of monotone likelihood
+
+# formula <- MRDbin~mtx.row
+# data <- main.data
+logistf2 <- function(formula, data, model=T){
+  if(model){
+    col.names <- as.character(formula)
+    model <- data[,which(colnames(data) %in% col.names[-1])]
+  }
+  else{
+    model <- NULL
+  }
+  fit <- firth.logistic(dset=data, form=formula, firth=T)
+  res <- list(model, fit, fit$coef)
+  names(res) <- c("model", "fit", "beta")
+  class(res) <- "logistf2"
+  return(res)
+}
+
+nlogL.logistic=function(beta,y,mdl.mtx,firth=F)
+
+{
+  lnr.cmb=mdl.mtx%*%beta                                                  # compute linear predictors
+  y.hat=exp(lnr.cmb)/(1+exp(lnr.cmb))                                     # compute predicted probabilities
+  logL=sum(log(y.hat[y==1]))+sum(log(1-y.hat[y==0]))              # logistic regression likelihood
+  I.mtx=t(mdl.mtx)%*%diag(as.vector(y.hat*(1-y.hat)))%*%mdl.mtx           # Equation 5.20 of Agretsi (2002)
+  pen=firth*0.5*log(det(I.mtx))                                           # Firth penalty term (Heinze & Schemper 2002; PMID 12210625)
+  return(-logL-pen)                                                       # (penalized) likelihood for input beta & data
+}
+
+# form <- formula
+# dset=data
+# firth=T
+firth.logistic=function(form,dset,firth=T)
+
+{
+  glm.res=stats::glm(form,data=dset,family=binomial)                             # use glm for initial fit
+  mdl.mtx=model.matrix(glm.res$model, data=dset)                                     # extract model matrix
+  y.obs=glm.res$y                                                         # extract observed y
+  nlm.res=stats::nlminb(start=glm.res$coefficients,                              # fit model with firth-penalized likelihood
+                        objective=nlogL.logistic,
+                        y=y.obs,mdl.mtx=mdl.mtx,firth=firth)
+  res=list(coef=nlm.res$par,
+           loglik=-nlm.res$objective,
+           converged=(nlm.res$converge==0))
   return(res)
 }
 

@@ -231,10 +231,10 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
   if(any(col.sd==0)&z){
     B.mtx.scale <- B.mtx
     for(i in 1:ncol(B.mtx.scale)){
-      if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
+      if(col.sd[i]!=0){B.mtx.scale[,i] <- (B.mtx[,i]-cent[i])/f(B.mtx[,i]-cent[i])}
     }
     pca.res=stats::prcomp(B.mtx.scale,
-                          center=cent,
+                          center=F,
                           scale.=F)
   }
   else{
@@ -282,10 +282,10 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
         if(any(col.sd==0)&z){
           B.mtx.scale <- B.mtx
           for(i in 1:ncol(B.mtx.scale)){
-            if(col.sd[i]!=0){B.mtx.scale[,i] <- B.mtx[,i]/col.sd[i]}
+            if(col.sd[i]!=0){B.mtx.scale[,i] <- (B.mtx[,i]-cent[i])/f(B.mtx[,i]-cent[i])}
           }
           pca.res=stats::prcomp(B.mtx.scale,
-                                center=cent,
+                                center=F,
                                 scale.=F)
         }
         else{
@@ -323,4 +323,10 @@ beam.pvalue=function(B.mtx,     # bootstrap matrix with observed result in row 1
 
   output.list <- list(p=p, dist.to.null=dist.to.null, mean.from.obs=mean.from.obs)
   return(output.list)
+}
+
+# scale in scale R command
+f <- function(v) {
+  v <- v[!is.na(v)]
+  sqrt(sum(v^2) / max(1, length(v) - 1L))
 }
