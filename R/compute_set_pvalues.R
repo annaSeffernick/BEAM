@@ -187,9 +187,12 @@ compute_set_pvalues=function(beam.stats, peel=F, z=T, alpha=0.1, mess.freq=25)
     mean.from.center[i] <- res.list$mean.from.obs
     distance.ratio[i] <- res.list$dist.to.null/res.list$mean.from.obs
   }
+  message(paste0("Finished computing p-values at: ",date()))
   pi0.hat=min(1,2*mean(p.set,na.rm=T))
   q.set=pi0.hat*stats::p.adjust(p.set,method="fdr")
+  message(paste0("Minimum q-value is ", min(q.set)))
 
+  message("Creating set p-value data frame.")
   set.pvals=cbind.data.frame(set.id=set.index$set.id,
                              features=features,
                              mean.from.center=mean.from.center,
@@ -197,6 +200,7 @@ compute_set_pvalues=function(beam.stats, peel=F, z=T, alpha=0.1, mess.freq=25)
                              distance.ratio=distance.ratio,
                              p.set=p.set,
                              q.set=q.set)
+  message("Done creating data frame.")
 
   set.anns=beam.stats$beam.data$set.anns
   if (!is.null(set.anns))
@@ -206,6 +210,7 @@ compute_set_pvalues=function(beam.stats, peel=F, z=T, alpha=0.1, mess.freq=25)
     set.pvals=ann.pvals
   }
 
+  message("Creating list for output.")
   res=list(set.pvals=set.pvals,
            row.pvals=smry.mtx,
            set.mtch=set.mtch)
