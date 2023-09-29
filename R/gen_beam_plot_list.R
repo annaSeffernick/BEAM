@@ -8,6 +8,7 @@
 #' @param number.pairs Numeric; number of features to display in clinical plots, ordered by significance
 #' @param set.id A character with set name; must be in beam.result$beam.data$set.data$set.id
 #' @param feat.id Default NULL; a character with feature name; must be in beam.result$beam.data$set.data$row.id
+#' @param title.size A numeric. Specify the size of individual plot titles. Default is 10.
 #'
 #' @return A list of plots for the specified set and/or feature.
 #' @import ggplot2
@@ -27,9 +28,9 @@
 #' plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 #' plot.list <- gen_beam_plot_list(beam.result=test.beam.stats, beam.specs=plot.specs,
 #'                                 beam.feat.pvals=test.feat.pvals, number.pairs=1,
-#'                                 set.id="ENSG00000099810", feat.id=NULL)
+#'                                 set.id="ENSG00000099810", feat.id=NULL, title.size=11)
 gen_beam_plot_list <- function(beam.result, beam.specs, beam.feat.pvals, number.pairs=1,
-                               set.id, feat.id=NULL) # Option to filter by feat.id instead of set.id
+                               set.id, feat.id=NULL, title.size=10) # Option to filter by feat.id instead of set.id
 {
   beam.data <- beam.result$beam.data
   main.data <- beam.result$beam.data$main.data
@@ -84,10 +85,10 @@ gen_beam_plot_list <- function(beam.result, beam.specs, beam.feat.pvals, number.
     if(n.subplt==1){
       if(grepl("ggsurv", plt)){
         plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top, plt)
-        plot.temp <- plot.temp$plot + ggplot2::ggtitle(paste(feat.temp.or$id[1], " Simple Test P-Value = ", signif(feat.temp.or$p[1], digits=3)))+ ggplot2::theme(plot.title=element_text(size=10))
+        plot.temp <- plot.temp$plot + ggplot2::ggtitle(paste(feat.temp.or$id[1], " P-Value = ", signif(feat.temp.or$p[1], digits=3)))+ ggplot2::theme(plot.title=element_text(size=title.size))
       }
       else{
-        plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top, plt) + ggplot2::ggtitle(paste(feat.temp.or$id[1], " Simple Test P-Value = ", signif(feat.temp.or$p[1], digits=3))) + ggplot2::theme(plot.title=element_text(size=10))
+        plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top, plt) + ggplot2::ggtitle(paste(feat.temp.or$id[1], " P-Value = ", signif(feat.temp.or$p[1], digits=3))) + ggplot2::theme(plot.title=element_text(size=title.size))
       }
       beam.plots <- rlist::list.append(beam.plots, plot.temp)
 
@@ -96,10 +97,10 @@ gen_beam_plot_list <- function(beam.result, beam.specs, beam.feat.pvals, number.
       for(j in 1:n.subplt){
         if(grepl("ggsurv", plt)){
           plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top[j,], plt)
-          plot.temp <- plot.temp$plot + ggplot2::ggtitle(paste(feat.temp.or$id[j], " Simple Test P-Value = ", signif(feat.temp.or$p[j], digits=3)))+ ggplot2::theme(plot.title=element_text(size=10))
+          plot.temp <- plot.temp$plot + ggplot2::ggtitle(paste(feat.temp.or$id[j], " P-Value = ", signif(feat.temp.or$p[j], digits=3)))+ ggplot2::theme(plot.title=element_text(size=title.size))
         }
         else{
-          plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top[j,], plt) + ggplot2::ggtitle(paste(feat.temp.or$id[j], " Simple Test P-Value = ", signif(feat.temp.or$p[j], digits=3)))+ ggplot2::theme(plot.title=element_text(size=10))
+          plot.temp <- clin.plot.beam(main.data, mtx.X.sm.top[j,], plt) + ggplot2::ggtitle(paste(feat.temp.or$id[j], " P-Value = ", signif(feat.temp.or$p[j], digits=3)))+ ggplot2::theme(plot.title=element_text(size=title.size))
         }
 
         beam.plots <- rlist::list.append(beam.plots, plot.temp)

@@ -11,6 +11,7 @@
 #' @param number.pairs A numeric. Default 1, in which case only feature with best simple test for each pair is plotted. If >1, show top n simple plots ordered by feature-level p-value
 #' @param n.col A numeric. Specify the number of columns for the plot layout; default NULL will use the number of omics types.
 #' @param n.row A numeric. Specify the number of rows for the plot layout; default NULL will automatically define the number of rows after number of columns specified.
+#' @param title.size A numeric. Specify the size of individual plot titles. Default is 10.
 #'
 #' @return A figure (ggarrange object)
 #' @importFrom ggpubr ggarrange
@@ -30,9 +31,10 @@
 #' test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
 #'                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
 #'                             set.id="ENSG00000099810", pair.type=NULL, number.pairs=1,
-#'                             n.col=4, n.row=NULL)
+#'                             n.col=4, n.row=NULL, title.size=11)
 plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.feat.pvals,
-                           set.id, pair.type=NULL, number.pairs=1, n.col=NULL, n.row=NULL)
+                           set.id, pair.type=NULL, number.pairs=1, n.col=NULL, n.row=NULL,
+                           title.size=10)
 {
   # Check data
   if(!inherits(beam.result, "beam.stats"))
@@ -65,7 +67,7 @@ plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.fe
     # Loop through beam.feat.pvals to find the best simple test to plot
     beam.plots <- gen_beam_plot_list(beam.result=beam.result, beam.specs=beam.specs.ord,
                                      beam.feat.pvals = beam.feat.pvals, number.pairs = number.pairs,
-                                     set.id=set.id, feat.id=NULL)
+                                     set.id=set.id, feat.id=NULL, title.size=title.size)
     p.overall <- signif(beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id==set.id),c("p.set")], digits=4)
     q.overall <- signif(beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id==set.id),c("q.set")], digits=4)
     n.tot <- length(beam.plots)

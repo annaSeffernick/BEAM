@@ -13,7 +13,8 @@ plot_beam_clin(
   pair.type = NULL,
   number.pairs = 1,
   n.col = NULL,
-  n.row = NULL
+  n.row = NULL,
+  title.size = 10
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ plot_beam_clin(
 \item{n.col}{A numeric. Specify the number of columns for the plot layout; default NULL will use the number of omics types.}
 
 \item{n.row}{A numeric. Specify the number of rows for the plot layout; default NULL will automatically define the number of rows after number of columns specified.}
+
+\item{title.size}{A numeric. Specify the size of individual plot titles. Default is 10.}
 }
 \value{
 A figure (ggarrange object)
@@ -53,5 +56,5 @@ plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
                             set.id="ENSG00000099810", pair.type=NULL, number.pairs=1,
-                            n.col=4, n.row=NULL)
+                            n.col=4, n.row=NULL, title.size=11)
 }

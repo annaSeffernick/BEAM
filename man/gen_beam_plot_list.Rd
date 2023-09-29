@@ -10,7 +10,8 @@ gen_beam_plot_list(
   beam.feat.pvals,
   number.pairs = 1,
   set.id,
-  feat.id = NULL
+  feat.id = NULL,
+  title.size = 10
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ gen_beam_plot_list(
 \item{set.id}{A character with set name; must be in beam.result$beam.data$set.data$set.id}
 
 \item{feat.id}{Default NULL; a character with feature name; must be in beam.result$beam.data$set.data$row.id}
+
+\item{title.size}{A numeric. Specify the size of individual plot titles. Default is 10.}
 }
 \value{
 A list of plots for the specified set and/or feature.
@@ -42,5 +45,5 @@ test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
 plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 plot.list <- gen_beam_plot_list(beam.result=test.beam.stats, beam.specs=plot.specs,
                                 beam.feat.pvals=test.feat.pvals, number.pairs=1,
-                                set.id="ENSG00000099810", feat.id=NULL)
+                                set.id="ENSG00000099810", feat.id=NULL, title.size=11)
 }
