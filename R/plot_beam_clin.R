@@ -7,6 +7,7 @@
 #' @param beam.set.pvals A list containing BEAM set p-values from compute_set_pvalues.
 #' @param beam.feat.pvals A list containing feature-level p-values from compute_feature_pvalues.
 #' @param set.id A character specifying the name of a set. Must be in beam.result$beam.data$set.data
+#' @param gene.name A character specifying a Gene Name/Symbol for the set. Default is NULL
 #' @param pair.type A character vector. Default NULL, in which case clinical plots for all omic/endpoint pairs are produced. Otherwise specify pairs from beam.stats$beam.specs$name
 #' @param number.pairs A numeric. Default 1, in which case only feature with best simple test for each pair is plotted. If >1, show top n simple plots ordered by feature-level p-value
 #' @param n.col A numeric. Specify the number of columns for the plot layout; default NULL will use the number of omics types.
@@ -30,10 +31,10 @@
 #' plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 #' test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
 #'                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
-#'                             set.id="ENSG00000099810", pair.type=NULL, number.pairs=1,
-#'                             n.col=4, n.row=NULL, title.size=11)
+#'                             set.id="ENSG00000099810", gene.name="MTAP", pair.type=NULL,
+#'                             number.pairs=1, n.col=4, n.row=NULL, title.size=11)
 plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.feat.pvals,
-                           set.id, pair.type=NULL, number.pairs=1, n.col=NULL, n.row=NULL,
+                           set.id, gene.name=NULL, pair.type=NULL, number.pairs=1, n.col=NULL, n.row=NULL,
                            title.size=10)
 {
   # Check data
@@ -80,7 +81,12 @@ plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.fe
     else{
       plots <- ggpubr::ggarrange(plotlist=beam.plots, ncol=n.col, nrow=n.row)
     }
-    print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
+    if(is.null(gene.name)){
+      print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
+    }
+    else{
+      print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " (", gene.name,") Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
+    }
   }
   else{
     # Check that pair.type is in beam.spec$name
@@ -106,8 +112,12 @@ plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.fe
     else{
       plots <- ggpubr::ggarrange(plotlist=beam.plots, ncol=n.col, nrow=n.row)
     }
-    print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
-
+    if(is.null(gene.name)){
+      print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
+    }
+    else{
+      print(ggpubr::annotate_figure(plots, top=ggpubr::text_grob(paste0(set.id, " (", gene.name,") Clinical Plots"), size=28),bottom=ggpubr::text_grob(paste0("BEAM P-value = ", p.overall, "; BEAM q-value = ", q.overall), size=14)))
+    }
   }
 
 }

@@ -10,6 +10,7 @@ plot_beam_clin(
   beam.set.pvals,
   beam.feat.pvals,
   set.id,
+  gene.name = NULL,
   pair.type = NULL,
   number.pairs = 1,
   n.col = NULL,
@@ -27,6 +28,8 @@ plot_beam_clin(
 \item{beam.feat.pvals}{A list containing feature-level p-values from compute_feature_pvalues.}
 
 \item{set.id}{A character specifying the name of a set. Must be in beam.result$beam.data$set.data}
+
+\item{gene.name}{A character specifying a Gene Name/Symbol for the set. Default is NULL}
 
 \item{pair.type}{A character vector. Default NULL, in which case clinical plots for all omic/endpoint pairs are produced. Otherwise specify pairs from beam.stats$beam.specs$name}
 
@@ -55,6 +58,6 @@ test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
 plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
-                            set.id="ENSG00000099810", pair.type=NULL, number.pairs=1,
-                            n.col=4, n.row=NULL, title.size=11)
+                            set.id="ENSG00000099810", gene.name="MTAP", pair.type=NULL,
+                            number.pairs=1, n.col=4, n.row=NULL, title.size=11)
 }
