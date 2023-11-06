@@ -2,6 +2,7 @@
 #'
 #' @param beam.data Result of prep.beam.data
 #' @param beam.specs A data.frame of strings with columns name, mtx, mdl (string with R model with mtx.row)
+#' @param stdize Logical whether to standardize (center and scale) predictors or not. Default is TRUE.
 #'
 #' @return A beam.stats object, which is a list with beam.stats (the association matrices), the beam.specs, and the beam.data
 #' @importFrom stats coef
@@ -29,8 +30,8 @@
 #'                                  mtx.anns=omicann, set.data=setdat,
 #'                                  set.anns=NULL, n.boot=10, seed=123)
 #' specs <- prep_beam_specs(beam.data=test.beam.data, endpts=c("MRD29", "EFS", "OS"), firth=TRUE)
-#' test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs)
-compute_beam_stats=function(beam.data, beam.specs)
+#' test.beam.stats <- compute_beam_stats(beam.data=test.beam.data, beam.specs=specs, stdize=TRUE)
+compute_beam_stats=function(beam.data, beam.specs,stdize=TRUE)
 {
   ##############################
   # Check data
@@ -68,7 +69,8 @@ compute_beam_stats=function(beam.data, beam.specs)
                                      mtx,
                                      main.data,
                                      x.clm,
-                                     mdl)
+                                     mdl,
+                                     stdize=stdize)
   }
 
   names(beam.stats)=beam.specs[,"name"]
@@ -90,6 +92,7 @@ boot_model_coefs=function(boot.index,
                           main.data,
                           x.clm,
                           mdl,
+                          stdize,
                           mess.freq=10)
 
 {
@@ -114,7 +117,7 @@ boot_model_coefs=function(boot.index,
     print(x.index)
     boot.X=X[,x.index]
     print(dim(boot.X))
-    res[,i]=row_model_coefs(boot.X,boot.data,mdl)
+    res[,i]=row_model_coefs(boot.X,boot.data,mdl,stdize)
   }
   return(res)
 }
@@ -122,19 +125,20 @@ boot_model_coefs=function(boot.index,
 #########################################
 # For each row of X, fit a model and get the first coefficient
 
-row_model_coefs=function(X,main.data,mdl)
+row_model_coefs=function(X,main.data,mdl,stdize)
 
 {
   res=apply(X,1,model_coef,
             main.data=main.data,
-            mdl=mdl)
+            mdl=mdl,
+            stdize=stdize)
   return(res)
 }
 
 ############################################
 # Get the first non-intercept coefficient for a fitted model
 
-model_coef=function(x,main.data,mdl)
+model_coef=function(x,main.data,mdl,stdize)
 
 {
   res=NA
@@ -143,7 +147,12 @@ model_coef=function(x,main.data,mdl)
   if (sdx==0) return(0)
 
   mnx=mean(x,na.rm=T)
-  main.data$mtx.row=(x-mnx)/sdx
+  if(stdize){
+    main.data$mtx.row=(x-mnx)/sdx
+  }
+  else{
+    main.data$mtx.row=x
+  }
 
   # check output before fitting cox models
   # check output before fitting cox models
