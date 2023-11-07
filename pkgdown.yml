@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   BEAM: BEAM.html
-last_built: 2023-10-02T15:13Z
+last_built: 2023-11-07T20:53Z
 urls:
   reference: https://annaseffernick.github.io/BEAM/reference
   article: https://annaseffernick.github.io/BEAM/articles
