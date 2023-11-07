@@ -18,7 +18,7 @@ find_id_clm=function(mtch.data,ids)
                              mtch.data)
 
   mtch.mtx=apply(mtch.data,2,is.element,ids) # check each column of mtch.data for matches
-  n.mtch=colSums(mtch.mtx)                   # compute number of matches
+  n.mtch=colSums(matrix(mtch.mtx))                   # compute number of matches
   mtch.clm=which.max(n.mtch)                 # find column with most matches
   mtch.clm=colnames(mtch.data)[mtch.clm]
   return(mtch.clm)
