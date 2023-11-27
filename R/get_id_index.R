@@ -43,7 +43,12 @@ get_id_index=function(mtch.data,
   #mtch.mtx=as.data.frame(t(apply(mtch.data,2,
   #                               is.element,ids[id.mtch.index]))) # check each column of mtch.data for matches
   mtch.mtx <- apply(mtch.data, 2, is.element, ids[id.mtch.index])
-  n.mtch=colSums(matrix(mtch.mtx))                      # compute number of matches
+  if(is.matrix(mtch.mtx)){
+    n.mtch=colSums(mtch.mtx)# compute number of matches
+  }
+  else{
+    n.mtch=colSums(matrix(mtch.mtx)) # compute number of matches
+  }
   mtch.clm=which.max(n.mtch)                    # find column with most matches
 
   ids=as.character(ids)
