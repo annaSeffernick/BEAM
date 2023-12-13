@@ -343,7 +343,7 @@ get_model_terms=function(model.fit)
 # Find Firth-penalized coefficients in Cox model
 # in case of monotone likelihood
 
-coxphf2 <- function(formula, data, model=T){
+coxphf2 <- function(formula, data, model=TRUE){
   if(model){
     col.names <- as.character(formula)
     model <- data[,which(colnames(data) %in% col.names[-1])]
@@ -358,7 +358,7 @@ coxphf2 <- function(formula, data, model=T){
   return(res)
 }
 
-firth.neg.logL=function(beta,dset,form,use.pen=F)
+firth.neg.logL=function(beta,dset,form,use.pen=FALSE)
 {
   suppressWarnings({
     cox.res0=coxph(form,data=dset,init=beta,control=coxph.control(iter.max=0)) # cox logL at beta
@@ -373,7 +373,7 @@ firth.neg.logL=function(beta,dset,form,use.pen=F)
   return(res)
 }
 
-firth.coxph=function(dset,form,use.pen=T)
+firth.coxph=function(dset,form,use.pen=TRUE)
 {
   suppressWarnings({
     cox.fit=coxph(form,data=dset,control=coxph.control(iter.max=0))
@@ -391,28 +391,30 @@ firth.coxph=function(dset,form,use.pen=T)
 
 # formula <- MRDbin~mtx.row
 # data <- main.data
-logistf2 <- function(formula, data, model=T){
+logistf2 <- function(formula, data, model=TRUE){
   if(model){
-    col.names <- as.character(formula)
-    model <- data[,which(colnames(data) %in% col.names[-1])]
+    col.names <- unlist(strsplit(as.character(formula), split=" "))
+    model <- data[,which(colnames(data) %in% col.names)]
   }
   else{
     model <- NULL
   }
-  fit <- firth.logistic(dset=data, form=formula, firth=T)
+  fit <- firth.logistic(dset=data, form=formula, firth=TRUE)
   res <- list(model, fit, fit$coef)
   names(res) <- c("model", "fit", "beta")
   class(res) <- "logistf2"
   return(res)
 }
 
-nlogL.logistic=function(beta,y,mdl.mtx,firth=F)
+nlogL.logistic=function(beta,y,mdl.mtx,firth=FALSE)
 
 {
-  lnr.cmb=mdl.mtx%*%beta                                                  # compute linear predictors
+  # Add extra step to filter mdl.mtx for factor covariates
+  mdl.mtx2 <- mdl.mtx[, which(colnames(mdl.mtx)%in%names(beta))]
+  lnr.cmb=mdl.mtx2%*%beta                                                  # compute linear predictors
   y.hat=exp(lnr.cmb)/(1+exp(lnr.cmb))                                     # compute predicted probabilities
   logL=sum(log(y.hat[y==1]))+sum(log(1-y.hat[y==0]))              # logistic regression likelihood
-  I.mtx=t(mdl.mtx)%*%diag(as.vector(y.hat*(1-y.hat)))%*%mdl.mtx           # Equation 5.20 of Agretsi (2002)
+  I.mtx=t(mdl.mtx2)%*%diag(as.vector(y.hat*(1-y.hat)))%*%mdl.mtx2           # Equation 5.20 of Agretsi (2002)
   pen=firth*0.5*log(det(I.mtx))                                           # Firth penalty term (Heinze & Schemper 2002; PMID 12210625)
   return(-logL-pen)                                                       # (penalized) likelihood for input beta & data
 }
@@ -420,11 +422,11 @@ nlogL.logistic=function(beta,y,mdl.mtx,firth=F)
 # form <- formula
 # dset=data
 # firth=T
-firth.logistic=function(form,dset,firth=T)
+firth.logistic=function(form,dset,firth=TRUE)
 
 {
   suppressWarnings({
-  glm.res=stats::glm(form,data=dset,family=binomial)                             # use glm for initial fit
+    glm.res=stats::glm(form,data=dset,family=binomial)                             # use glm for initial fit
   }) # suppress expected warnings from glm fit for initial values
   mdl.mtx=model.matrix(glm.res$model, data=dset)                                     # extract model matrix
   y.obs=glm.res$y                                                         # extract observed y
@@ -436,6 +438,5 @@ firth.logistic=function(form,dset,firth=T)
            converged=(nlm.res$converge==0))
   return(res)
 }
-
 
 
