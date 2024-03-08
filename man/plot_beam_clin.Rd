@@ -13,6 +13,8 @@ plot_beam_clin(
   gene.name = NULL,
   pair.type = NULL,
   number.pairs = 1,
+  pair.order = "both",
+  endpt.order = NULL,
   n.col = NULL,
   n.row = NULL,
   title.size = 10
@@ -34,6 +36,10 @@ plot_beam_clin(
 \item{pair.type}{A character vector. Default NULL, in which case clinical plots for all omic/endpoint pairs are produced. Otherwise specify pairs from beam.stats$beam.specs$name}
 
 \item{number.pairs}{A numeric. Default 1, in which case only feature with best simple test for each pair is plotted. If >1, show top n simple plots ordered by feature-level p-value}
+
+\item{pair.order}{One of c("both", "omic", "endpoint"). Default is "both." Specify how to choose feature-endpoint plots to include. If "both", find the best (based on q, p, effect size) feature-omic pair for each type of omic and each endpoint separately. If "omic", within each omic, find the best feature-endpoint pair and then plot this feature with all endpoints. If "endpoint", need to specify endpt.order as the name of chosen endpoint. Then, within each omic, find the feature with best association with the selected endpoint, and plot this feature for all endpoints.}
+
+\item{endpt.order}{Default NULL. If pair.order="endpoint", specify character with endpoint name (from beam.specs$name, after the period).}
 
 \item{n.col}{A numeric. Specify the number of columns for the plot layout; default NULL will use the number of omics types.}
 
@@ -59,5 +65,6 @@ plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
                             set.id="ENSG00000099810", gene.name="MTAP", pair.type=NULL,
-                            number.pairs=1, n.col=4, n.row=NULL, title.size=11)
+                            number.pairs=1, n.col=4, n.row=NULL, title.size=11,
+                            pair.order="omic", endpt.order=NULL)
 }

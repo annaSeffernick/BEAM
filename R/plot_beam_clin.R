@@ -10,6 +10,8 @@
 #' @param gene.name A character specifying a Gene Name/Symbol for the set. Default is NULL
 #' @param pair.type A character vector. Default NULL, in which case clinical plots for all omic/endpoint pairs are produced. Otherwise specify pairs from beam.stats$beam.specs$name
 #' @param number.pairs A numeric. Default 1, in which case only feature with best simple test for each pair is plotted. If >1, show top n simple plots ordered by feature-level p-value
+#' @param pair.order One of c("both", "omic", "endpoint"). Default is "both." Specify how to choose feature-endpoint plots to include. If "both", find the best (based on q, p, effect size) feature-omic pair for each type of omic and each endpoint separately. If "omic", within each omic, find the best feature-endpoint pair and then plot this feature with all endpoints. If "endpoint", need to specify endpt.order as the name of chosen endpoint. Then, within each omic, find the feature with best association with the selected endpoint, and plot this feature for all endpoints.
+#' @param endpt.order Default NULL. If pair.order="endpoint", specify character with endpoint name (from beam.specs$name, after the period).
 #' @param n.col A numeric. Specify the number of columns for the plot layout; default NULL will use the number of omics types.
 #' @param n.row A numeric. Specify the number of rows for the plot layout; default NULL will automatically define the number of rows after number of columns specified.
 #' @param title.size A numeric. Specify the size of individual plot titles. Default is 10.
@@ -32,9 +34,11 @@
 #' test.plot <- plot_beam_clin(beam.result=test.beam.stats, beam.specs=plot.specs,
 #'                             beam.set.pvals=test.pvals, beam.feat.pvals=test.feat.pvals,
 #'                             set.id="ENSG00000099810", gene.name="MTAP", pair.type=NULL,
-#'                             number.pairs=1, n.col=4, n.row=NULL, title.size=11)
+#'                             number.pairs=1, n.col=4, n.row=NULL, title.size=11,
+#'                             pair.order="omic", endpt.order=NULL)
 plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.feat.pvals,
-                           set.id, gene.name=NULL, pair.type=NULL, number.pairs=1, n.col=NULL, n.row=NULL,
+                           set.id, gene.name=NULL, pair.type=NULL, number.pairs=1,
+                           pair.order="both", endpt.order=NULL, n.col=NULL, n.row=NULL,
                            title.size=10)
 {
   # Check data
@@ -68,7 +72,8 @@ plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.fe
     # Loop through beam.feat.pvals to find the best simple test to plot
     beam.plots <- gen_beam_plot_list(beam.result=beam.result, beam.specs=beam.specs.ord,
                                      beam.feat.pvals = beam.feat.pvals, number.pairs = number.pairs,
-                                     set.id=set.id, feat.id=NULL, title.size=title.size)
+                                     set.id=set.id, feat.id=NULL, title.size=title.size,
+                                     pair.order=pair.order, endpt.order=endpt.order)
     p.overall <- signif(beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id==set.id),c("p.set")], digits=4)
     q.overall <- signif(beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id==set.id),c("q.set")], digits=4)
     n.tot <- length(beam.plots)
@@ -97,7 +102,8 @@ plot_beam_clin <- function(beam.result, beam.specs=NULL, beam.set.pvals, beam.fe
     #n.spec.f <- nrow(beam.specs.ord.filt)
     beam.plots <- gen_beam_plot_list(beam.result=beam.result, beam.specs=beam.specs.ord.filt,
                                      beam.feat.pvals = beam.feat.pvals, number.pairs = number.pairs,
-                                     set.id=set.id, feat.id=NULL)
+                                     set.id=set.id, feat.id=NULL,
+                                     pair.order=pair.order, endpt.order=endpt.order)
 
 
     p.overall <- signif(beam.set.pvals$set.pvals[which(beam.set.pvals$set.pvals$set.id==set.id),c("p.set")], digits=4)

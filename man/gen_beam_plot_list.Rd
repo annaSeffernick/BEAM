@@ -11,7 +11,9 @@ gen_beam_plot_list(
   number.pairs = 1,
   set.id,
   feat.id = NULL,
-  title.size = 10
+  title.size = 10,
+  pair.order = "both",
+  endpt.order = NULL
 )
 }
 \arguments{
@@ -28,6 +30,10 @@ gen_beam_plot_list(
 \item{feat.id}{Default NULL; a character with feature name; must be in beam.result$beam.data$set.data$row.id}
 
 \item{title.size}{A numeric. Specify the size of individual plot titles. Default is 10.}
+
+\item{pair.order}{One of c("both", "omic", "endpoint"). Default is "both." Specify how to choose feature-endpoint plots to include. If "both", find the best (based on q, p, effect size) feature-omic pair for each type of omic and each endpoint separately. If "omic", within each omic, find the best feature-endpoint pair and then plot this feature with all endpoints. If "endpoint", need to specify endpt.order as the name of chosen endpoint. Then, within each omic, find the feature with best association with the selected endpoint, and plot this feature for all endpoints.}
+
+\item{endpt.order}{Default NULL. If pair.order="endpoint", specify character with endpoint name (from beam.specs$name, after the period).}
 }
 \value{
 A list of plots for the specified set and/or feature.
@@ -45,5 +51,6 @@ test.feat.pvals <- compute_feature_pvalues(beam.stats=test.beam.stats)
 plot.specs <- prep_beam_plot(beam.data=test.beam.data, beam.specs=specs)
 plot.list <- gen_beam_plot_list(beam.result=test.beam.stats, beam.specs=plot.specs,
                                 beam.feat.pvals=test.feat.pvals, number.pairs=1,
-                                set.id="ENSG00000099810", feat.id=NULL, title.size=11)
+                                set.id="ENSG00000099810", feat.id=NULL, title.size=11,
+                                pair.order="omic", endpt.order=NULL)
 }
